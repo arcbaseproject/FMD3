@@ -5,6 +5,7 @@
 #   ./install.sh --profile <dir|name>
 #   ./install.sh --list              show the Firefox profiles found
 #   ./install.sh --no-hook           skip the theme switcher hook
+#   ./install.sh --no-auto-update    disable automatic updates for this profile
 #   ./install.sh --wallpaper <image> generate the palette from an image
 #   ./install.sh --firefox-dir <dir> Firefox install folder for the hook
 #                                    (for a Firefox unpacked somewhere else)
@@ -21,6 +22,8 @@ BLOCK_END="// <<< FMD3"
 
 profile_arg=""
 want_hook=1
+want_auto_update=1
+update_only=0
 wallpaper=""
 firefox_dir=""
 action="install"
@@ -38,7 +41,7 @@ warn() { printf '%s  ! %s%s\n' "$yellow" "$*" "$reset" >&2; }
 die()  { printf '%serror:%s %s\n' "$red" "$reset" "$*" >&2; exit 1; }
 
 usage() {
-  sed -n '2,15p' "$0" 2>/dev/null | sed 's/^# \{0,1\}//' || true
+  sed -n '2,16p' "$0" 2>/dev/null | sed 's/^# \{0,1\}//' || true
 }
 
 # -- Arguments ----------------------------------------------------------------
@@ -48,6 +51,8 @@ while [[ $# -gt 0 ]]; do
     --profile)   profile_arg="${2:?--profile needs a directory or profile name}"; shift 2 ;;
     --list)      action="list"; shift ;;
     --no-hook)   want_hook=0; shift ;;
+    --no-auto-update) want_auto_update=0; shift ;;
+    --update-only) update_only=1; want_hook=0; want_auto_update=0; shift ;;
     --wallpaper) wallpaper="${2:?--wallpaper needs an image path}"; shift 2 ;;
     --firefox-dir) firefox_dir="${2:?--firefox-dir needs a directory}"; shift 2 ;;
     --uninstall) action="uninstall"; shift ;;
@@ -119,6 +124,10 @@ list_profiles() {
 
 pick_profile() {
   local rows best="" best_time=0 path name flag t
+  if [[ -n "$profile_arg" && -d "$profile_arg" ]]; then
+    (cd "$profile_arg" && pwd)
+    return
+  fi
   rows="$(list_profiles)"
   [[ -n "$rows" ]] || die "no Firefox profile found. Start Firefox once, then run this again."
 
@@ -203,6 +212,81 @@ firefox_install_dir() {
 }
 
 # -- Actions --------------------------------------------------------------------
+
+updater_dir="${XDG_CONFIG_HOME:-$HOME/.config}/fmd3"
+
+updater_profile_file() {
+  local key
+  key="$(printf '%s' "$profile" | sha256sum)"
+  printf '%s/profiles/%s\n' "$updater_dir" "${key%% *}"
+}
+
+remove_auto_update() {
+  rm -f "$(updater_profile_file)"
+  if [[ -d "$updater_dir/profiles" ]] && [[ -z "$(find "$updater_dir/profiles" -type f -print -quit)" ]]; then
+    if command -v systemctl >/dev/null; then
+      systemctl --user disable --now fmd3-update.timer || warn "Could not disable the update timer."
+    fi
+    rm -f "${XDG_CONFIG_HOME:-$HOME/.config}/systemd/user/fmd3-update.service" \
+      "${XDG_CONFIG_HOME:-$HOME/.config}/systemd/user/fmd3-update.timer"
+    if command -v systemctl >/dev/null; then
+      systemctl --user daemon-reload || warn "Could not reload user services."
+    fi
+  fi
+}
+
+# systemd command arguments use their own quoting and specifier expansion.
+systemd_quote() {
+  local value="$1"
+  value="${value//\\/\\\\}"
+  value="${value//\"/\\\"}"
+  value="${value//%/%%}"
+  value="${value//\$/\$\$}"
+  printf '"%s"' "$value"
+}
+
+install_auto_update() {
+  step "Automatic updates"
+  local dependency units
+  for dependency in git systemctl flock sha256sum; do
+    if ! command -v "$dependency" >/dev/null; then
+      warn "$dependency is required for automatic updates; theme installed without scheduling updates."
+      return
+    fi
+  done
+  mkdir -p "$updater_dir/profiles"
+  install -m 755 "$src/update.sh" "$updater_dir/update.sh.new"
+  mv "$updater_dir/update.sh.new" "$updater_dir/update.sh"
+  printf '%s\n' "$profile" > "$(updater_profile_file)"
+  units="${XDG_CONFIG_HOME:-$HOME/.config}/systemd/user"
+  mkdir -p "$units"
+  cat > "$units/fmd3-update.service" <<EOF
+[Unit]
+Description=Update the FMD3 Firefox theme
+
+[Service]
+Type=oneshot
+ExecStart=$(systemd_quote "$(command -v bash)") $(systemd_quote "$updater_dir/update.sh")
+TimeoutStartSec=10min
+EOF
+  cat > "$units/fmd3-update.timer" <<'EOF'
+[Unit]
+Description=Check for FMD3 updates daily
+
+[Timer]
+OnCalendar=daily
+RandomizedDelaySec=1h
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+EOF
+  if systemctl --user daemon-reload && systemctl --user enable --now fmd3-update.timer; then
+    info "Daily updates enabled. Restart Firefox after an update to load the new theme."
+  else
+    warn "Updater installed, but the user timer could not start. Run: systemctl --user enable --now fmd3-update.timer"
+  fi
+}
 
 do_list() {
   local path name flag
@@ -321,6 +405,9 @@ install_matugen() {
 
 do_install() {
   profile="$(pick_profile)"
+  if [[ "$update_only" == 1 && ! -f "$profile/chrome/.fmd3" ]]; then
+    die "FMD3 is no longer installed in $profile; refusing to reinstall it automatically."
+  fi
   step "Installing FMD3 into ${bold}$profile${reset}"
   firefox_running && warn "Firefox is running. Restart it after the install to see the theme."
 
@@ -362,8 +449,18 @@ user_pref("toolkit.legacyUserProfileCustomizations.stylesheets", true);
 user_pref("svg.context-properties.content.enabled", true);'
   info "Enabled the stylesheet prefs in user.js"
 
-  install_matugen
+  if [[ "$update_only" == 0 ]]; then
+    rm -f "$profile/chrome/.fmd3-revision"
+    install_matugen
+  fi
   [[ "$want_hook" == 1 ]] && install_hook
+  if [[ "$update_only" == 0 ]]; then
+    if [[ "$want_auto_update" == 1 ]]; then
+      install_auto_update
+    else
+      remove_auto_update
+    fi
+  fi
 
   step "${green}Done.${reset}"
   info "Restart Firefox. In Settings > Appearance, pick the \"System theme — auto\" theme"
@@ -374,6 +471,7 @@ user_pref("svg.context-properties.content.enabled", true);'
 do_uninstall() {
   profile="$(pick_profile)"
   step "Removing FMD3 from $profile"
+  remove_auto_update
   if [[ ! -f "$profile/chrome/.fmd3" ]]; then
     info "FMD3 is not installed in this profile; nothing removed."
     return

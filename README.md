@@ -47,6 +47,7 @@ The installer:
    `~/.config/matugen/config.toml` (your other templates stay untouched) and
    generates a palette from your wallpaper.
 5. Installs the theme switcher hook (see below).
+6. Installs and enables a daily automatic updater using a systemd user timer.
 
 Options:
 
@@ -56,6 +57,7 @@ Options:
 | `--profile <dir or name>` | Install into that profile instead of the default |
 | `--wallpaper <image>` | Generate the palette from this image |
 | `--no-hook` | Skip the theme switcher hook |
+| `--no-auto-update` | Disable automatic updates for this profile |
 | `--firefox-dir <dir>` | Firefox install folder, for a Firefox unpacked somewhere unusual |
 | `--uninstall` | Remove FMD3 and restore the backup |
 
@@ -64,6 +66,34 @@ Updates also keep custom files and additions below the override comments in
 `userChrome.css` and `userContent.css`. A full copy of the previous `chrome/`
 folder is saved in `fmd3-update-<date>-<suffix>/` before each update; edits to
 other bundled files can be recovered there.
+
+## Automatic updates
+
+The installer enables `fmd3-update.timer` when `git`, `flock`, `sha256sum` and
+`systemctl` are available. It checks GitHub's `main` branch daily, with up to
+one hour of randomized delay. Missed checks run after the next user login.
+Restart Firefox after an update to load the new styles.
+
+The updater keeps its own checkout under `~/.config/fmd3/repository` and
+leaves your development checkout untouched. It applies new commits to each
+registered profile through the downloaded installer, preserving palettes,
+custom overrides and update backups. Unchanged commits are skipped. Failed
+downloads leave installed profiles untouched and are retried on the next run.
+Automatic runs never install the system hook or regenerate wallpaper colors.
+The updater also refreshes itself and existing matugen templates.
+
+To check immediately or view logs:
+
+```sh
+systemctl --user start fmd3-update.service
+journalctl --user -u fmd3-update.service
+```
+
+Run `./install.sh --no-auto-update` to opt the selected profile out. Uninstall
+also unregisters that profile; the timer is disabled and its unit files removed
+when the last registered profile is removed. The cached checkout stays on disk.
+Paths under `~/.config` honor `XDG_CONFIG_HOME`. Without a working systemd user
+session, the installer reports that scheduling failed; the theme still installs.
 
 ## Theme switcher
 
