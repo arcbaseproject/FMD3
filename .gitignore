@@ -2,3 +2,6 @@
 chrome/m3/palette.generated.css
 chrome/m3/pages.palette.generated.css
 chrome/m3/palette.live.css
+
+# Python regression test bytecode
+__pycache__/

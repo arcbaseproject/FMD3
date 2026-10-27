@@ -182,12 +182,12 @@
   min-height: 52px;
 }
 
-.unified-extensions-item:hover > .unified-extensions-item-row-wrapper > .unified-extensions-item-action-button {
+#unified-extensions-panel .unified-extensions-item:hover > .unified-extensions-item-row-wrapper > .unified-extensions-item-action-button {
   background-color: var(--m3-hover) !important;
   color: var(--md-sys-color-on-surface) !important;
 }
 
-.unified-extensions-item:hover > .unified-extensions-item-row-wrapper > .unified-extensions-item-action-button:hover {
+#unified-extensions-panel .unified-extensions-item:hover > .unified-extensions-item-row-wrapper > .unified-extensions-item-action-button:hover {
   background-color: var(--md-sys-color-secondary-container) !important;
   color: var(--md-sys-color-on-secondary-container) !important;
 }

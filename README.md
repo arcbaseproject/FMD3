@@ -60,6 +60,10 @@ Options:
 | `--uninstall` | Remove FMD3 and restore the backup |
 
 Running `./install.sh` again updates the theme in place and keeps your colors.
+Updates also keep custom files and additions below the override comments in
+`userChrome.css` and `userContent.css`. A full copy of the previous `chrome/`
+folder is saved in `fmd3-update-<date>-<suffix>/` before each update; edits to
+other bundled files can be recovered there.
 
 ## Theme switcher
 
@@ -172,6 +176,9 @@ those names).
 ./install.sh --uninstall
 ```
 
-This restores the `chrome/` folder and `user.js` from the backup, removes the
-FMD3 matugen templates and, outside NixOS, removes the hook. On NixOS, also
-delete the `programs.firefox` autoconfig block and rebuild.
+This restores the `chrome/` folder and `user.js` from the backup and removes
+the FMD3 matugen templates. Profiles without the FMD3 installation marker are
+left untouched. The shared startup hook stays installed for other profiles;
+it does nothing in profiles without the switcher files. On NixOS, remove the
+`programs.firefox` autoconfig block and rebuild only after all profiles using
+the switcher have been uninstalled.

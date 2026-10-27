@@ -279,7 +279,7 @@ install_matugen() {
   cfg="$mdir/config.toml"
   toml_block="$(sed -n '/^\[templates.firefox-m3\]/,$p' "$src/matugen/config.toml.in" | sed "s#@PROFILE_DIR@#$profile#g")"
   if [[ ! -f "$cfg" ]]; then
-    sed "s#@PROFILE_DIR@#$profile#g" "$src/matugen/config.toml.in" > "$cfg"
+    printf '[config]\n\n# >>> FMD3\n%s\n# <<< FMD3\n' "$toml_block" > "$cfg"
     info "Wrote $cfg"
   else
     # Keep the user's config; add or refresh only the FMD3 templates.
@@ -330,9 +330,9 @@ do_install() {
     # Upgrade: replace the theme files, keep the generated and live palettes.
     # The backup from the first install (the user's original theme) stays.
     info "Updating an existing FMD3 install"
-    find "$profile/chrome" -mindepth 1 \
-      ! -name 'palette.live.css' ! -name 'palette.generated.css' ! -name 'pages.palette.generated.css' \
-      ! -type d -delete
+    backup="$(mktemp -d "$profile/fmd3-update-$stamp-XXXXXX")"
+    cp -a "$profile/chrome" "$backup/chrome"
+    info "Saved the previous theme and customizations to $backup"
   elif [[ -e "$profile/chrome" || -f "$profile/user.js" ]]; then
     backup="$profile/fmd3-backup-$stamp"
     mkdir -p "$backup"
@@ -343,6 +343,16 @@ do_install() {
 
   mkdir -p "$profile/chrome"
   cp -R "$src/chrome/." "$profile/chrome/"
+  # Entry points document an override section; carry it forward on updates.
+  if [[ "$backup" == "$profile"/fmd3-update-* ]]; then
+    local entry
+    for entry in userChrome.css userContent.css; do
+      if [[ -f "$backup/chrome/$entry" ]]; then
+        awk '/^\/\* Your own overrides go below this line\./ { custom = 1; next } custom { print }' \
+          "$backup/chrome/$entry" >> "$profile/chrome/$entry"
+      fi
+    done
+  fi
   printf 'FMD3 theme. install.sh uses this file to tell an upgrade from a fresh install.\n' > "$profile/chrome/.fmd3"
   info "Copied the theme to $profile/chrome"
 
@@ -364,43 +374,43 @@ user_pref("svg.context-properties.content.enabled", true);'
 do_uninstall() {
   profile="$(pick_profile)"
   step "Removing FMD3 from $profile"
+  if [[ ! -f "$profile/chrome/.fmd3" ]]; then
+    info "FMD3 is not installed in this profile; nothing removed."
+    return
+  fi
   local latest
   latest="$(ls -1d "$profile"/fmd3-backup-* 2>/dev/null | sort | tail -1 || true)"
   rm -rf "$profile/chrome"
   if [[ -n "$latest" ]]; then
     [[ -d "$latest/chrome" ]] && cp -R "$latest/chrome" "$profile/chrome" && info "Restored chrome/ from $latest"
-    [[ -f "$latest/user.js" ]] && cp -p "$latest/user.js" "$profile/user.js" && info "Restored user.js from $latest"
+    if [[ -f "$latest/user.js" ]]; then
+      cp -p "$latest/user.js" "$profile/user.js"
+      info "Restored user.js from $latest"
+    else
+      drop_block "$profile/user.js"
+    fi
   else
     drop_block "$profile/user.js"
     info "Removed chrome/ and the FMD3 prefs"
   fi
   # Matugen: drop the FMD3 templates, keep everything else.
   local mcfg="${XDG_CONFIG_HOME:-$HOME/.config}/matugen/config.toml" tmpm
-  if [[ -f "$mcfg" ]] && grep -q '^# >>> FMD3' "$mcfg"; then
+  if [[ -f "$mcfg" ]]; then
     tmpm="$(mktemp)"
-    awk '/^# >>> FMD3/ { skip = 1; next } /^# <<< FMD3/ { skip = 0; next } !skip { print }' "$mcfg" > "$tmpm"
+    awk '
+      /^# >>> FMD3/ { skip = 1; next }
+      /^# <<< FMD3/ { skip = 0; next }
+      /^\[templates\.firefox-m3(-pages)?\]/ { skip = 2; next }
+      skip == 2 && /^\[/ { skip = 0 }
+      !skip { print }' "$mcfg" > "$tmpm"
     cat "$tmpm" > "$mcfg"
     rm -f "$tmpm" "${mcfg%/*}/templates/firefox-m3.css" "${mcfg%/*}/templates/firefox-m3-pages.css"
     info "Removed the FMD3 templates from $mcfg"
   fi
 
-  local dir
-  if { [[ -n "$firefox_dir" ]] || ! is_nixos; } && dir="$(firefox_install_dir)" && [[ -f "$dir/defaults/pref/fmd3-autoconfig.js" ]]; then
-    local sudo=""
-    [[ -w "$dir" ]] || sudo="sudo"
-    $sudo rm -f "$dir/defaults/pref/fmd3-autoconfig.js"
-    local tmpf
-    tmpf="$(mktemp)"
-    $sudo cat "$dir/mozilla.cfg" > "$tmpf" && drop_block "$tmpf"
-    if [[ "$(grep -cv '^//\|^$' "$tmpf")" == 0 ]]; then
-      $sudo rm -f "$dir/mozilla.cfg"
-    else
-      $sudo install -m 644 "$tmpf" "$dir/mozilla.cfg"
-    fi
-    rm -f "$tmpf"
-    info "Removed the switcher hook from $dir"
-  fi
-  [[ -z "$firefox_dir" ]] && is_nixos && info "On NixOS, also remove the programs.firefox.autoConfig block and rebuild."
+  # Firefox's hook is shared across profiles and users; without the profile
+  # switcher files it does nothing. Keep it for any remaining installations.
+  info "Kept the shared switcher hook for other profiles (inactive in this profile)."
   step "Done. Restart Firefox."
 }
 
