@@ -1,0 +1,333 @@
+/* ==========================================================================
+   Material You for Firefox: omnibox (address bar + search suggestions)
+   A tall pill on surface-container-highest. On focus it lifts onto the
+   lowest container with a primary ring; when results open it grows into an
+   extra-large rounded sheet, like the Pixel launcher search.
+   Driven through Firefox's urlbar tokens so its own open/close geometry
+   (the joint background around the results popover) keeps working.
+   ========================================================================== */
+
+:root {
+  --urlbar-height: var(--m3-omnibox-height) !important;
+  --urlbar-container-height: calc(var(--m3-omnibox-height) + 4px) !important;
+  --urlbar-min-height: var(--m3-omnibox-height) !important;
+  --urlbar-border-radius: var(--md-sys-shape-corner-full) !important;
+  --urlbar-background-border-radius: var(--md-sys-shape-corner-full) !important;
+  --urlbarview-border-radius: var(--md-sys-shape-corner-extra-large) !important;
+  --urlbar-inner-border-radius: var(--md-sys-shape-corner-full) !important;
+
+  --urlbar-background-color: var(--md-sys-color-surface-container-highest) !important;
+  --urlbar-background-color-focus: var(--md-sys-color-surface-container-lowest) !important;
+  --urlbar-background-border: 0 solid transparent !important;
+  --urlbar-background-border-open: 0 solid transparent !important;
+  --urlbar-background-border-focused: 0 solid transparent !important;
+  --urlbar-background-outline-focused: 2px solid var(--md-sys-color-primary) !important;
+  --urlbar-background-box-shadow-open: var(--m3-elev-3) !important;
+  --urlbar-input-container-outline-open: none !important;
+  --urlbar-input-container-outline-open-focused: none !important;
+  --urlbar-background-overhang-open: 6px !important;
+
+  /* Pills inside the bar (identity, search mode, trust panel) */
+  --urlbar-box-background-color: transparent !important;
+  --urlbar-box-background-color-hover: var(--m3-hover) !important;
+  --urlbar-box-background-color-active: var(--m3-pressed) !important;
+  --urlbar-box-background-color-focus: var(--m3-hover) !important;
+  --urlbar-box-text-color: var(--md-sys-color-on-surface-variant) !important;
+  --urlbar-box-text-color-hover: var(--md-sys-color-on-surface) !important;
+  --urlbar-box-text-color-active: var(--md-sys-color-on-surface) !important;
+  --urlbar-icon-fill-opacity: 1 !important;
+
+  /* Results */
+  --urlbarview-background-color-hover: var(--m3-hover) !important;
+  --urlbarview-background-color-selected: var(--md-sys-color-secondary-container) !important;
+  --urlbarview-text-color-selected: var(--md-sys-color-on-secondary-container) !important;
+  --urlbarview-text-color-secondary: var(--md-sys-color-on-surface-variant) !important;
+  --urlbarview-text-color-action: var(--md-sys-color-primary) !important;
+  --urlbarview-separator-color: var(--md-sys-color-outline-variant) !important;
+  --urlbarview-action-button-background-color: var(--md-sys-color-surface-container-highest) !important;
+  --urlbarview-action-button-background-color-hover: var(--m3-hover) !important;
+  --urlbarview-row-min-height: 44px !important;
+  --urlbarview-favicon-size: 18px !important;
+  --urlbar-popup-url-color: var(--md-sys-color-primary) !important;
+  --urlbar-popup-action-color: var(--md-sys-color-primary) !important;
+}
+
+/* The open sheet must not use the full-pill radius. */
+.urlbar[popover-open] {
+  --urlbar-background-border-radius: var(--md-sys-shape-corner-extra-large) !important;
+  --urlbar-border-radius: var(--md-sys-shape-corner-extra-large) !important;
+}
+
+/* In dark mode, focus sits one step brighter than the frame, not darker. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --urlbar-background-color-focus: var(--md-sys-color-surface-container-high) !important;
+  }
+}
+
+#urlbar-container,
+#search-container {
+  padding-block: 2px !important;
+  margin-inline: 6px !important;
+}
+
+#urlbar {
+  font-family: var(--m3-font-plain) !important;
+  font-size: 14.5px !important;
+  color: var(--md-sys-color-on-surface) !important;
+}
+
+.urlbar-background {
+  transition:
+    background-color var(--m3-dur-medium) var(--m3-ease-standard),
+    box-shadow var(--m3-dur-medium) var(--m3-ease-standard),
+    outline-color var(--m3-dur-short) var(--m3-ease-standard) !important;
+}
+
+#urlbar:not([focused], [popover-open]):hover > .urlbar-background {
+  background-color: color-mix(in srgb, var(--md-sys-color-on-surface) 5%, var(--md-sys-color-surface-container-highest)) !important;
+}
+
+/* Focused but closed: elevated pill with a primary ring. */
+#urlbar[focused]:not([popover-open]) > .urlbar-background {
+  box-shadow: var(--m3-elev-2) !important;
+}
+
+/* Open: the ring would cut the sheet in half, so drop it. */
+#urlbar[popover-open] > .urlbar-background {
+  outline: none !important;
+  background-color: var(--md-sys-color-surface-container-high) !important;
+}
+
+.urlbar-input-container {
+  padding-inline: 6px !important;
+}
+
+.urlbar-input {
+  padding-inline: 6px !important;
+}
+
+.urlbar-input::placeholder {
+  color: var(--md-sys-color-on-surface-variant) !important;
+  opacity: 1 !important;
+}
+
+/* Selection highlight in the text field */
+.urlbar-input::selection {
+  background-color: color-mix(in srgb, var(--md-sys-color-primary) 30%, transparent) !important;
+  color: inherit !important;
+}
+
+/* -- Pills and icons inside the bar --------------------------------------- */
+
+#urlbar :is(.urlbar-page-action, #identity-icon-box, #identity-permission-box,
+            #tracking-protection-icon-container,
+            #trust-icon-container, .urlbar-go-button, #notification-popup-box,
+            .identity-box-button) {
+  border-radius: var(--md-sys-shape-corner-full) !important;
+  transition: background-color var(--m3-dur-short) var(--m3-ease-standard) !important;
+}
+
+#urlbar :is(.urlbar-page-action, #tracking-protection-icon-container,
+            #identity-icon-box, #identity-permission-box, #trust-icon-container):hover {
+  background-color: var(--m3-hover) !important;
+}
+
+/* Search-mode chip ("Google", "Bookmarks"...): a tonal assist chip.
+   It is a moz-button (type="muted"). Its visible shape is the shadow
+   ::part(button), so color it through the muted button tokens and leave
+   the host transparent; painting the host draws a second, larger pill. */
+.searchmode-switcher {
+  --button-background-color-muted: var(--md-sys-color-surface-container-highest) !important;
+  --button-background-color-muted-hover: color-mix(in srgb, var(--md-sys-color-on-surface) 8%, var(--md-sys-color-surface-container-highest)) !important;
+  --button-background-color-muted-active: color-mix(in srgb, var(--md-sys-color-on-surface) 14%, var(--md-sys-color-surface-container-highest)) !important;
+  --button-background-color-muted-selected: var(--md-sys-color-secondary-container) !important;
+  --button-text-color-muted: var(--md-sys-color-on-surface-variant) !important;
+  --button-text-color-muted-hover: var(--md-sys-color-on-surface) !important;
+  --button-text-color-muted-active: var(--md-sys-color-on-surface) !important;
+  --button-border-color-muted: transparent !important;
+  --button-border-color-muted-hover: transparent !important;
+  --button-border-color-muted-active: transparent !important;
+  --button-border-radius: var(--md-sys-shape-corner-full) !important;
+  background: transparent !important;
+}
+
+.searchmode-switcher::part(button) {
+  border-radius: var(--md-sys-shape-corner-full) !important;
+  transition: background-color var(--m3-dur-short) var(--m3-ease-standard) !important;
+}
+
+/* Open menu or an active search mode: secondary container. */
+.searchmode-switcher:is([open], [aria-expanded="true"])::part(button),
+#urlbar[searchmode] .searchmode-switcher::part(button) {
+  background-color: var(--md-sys-color-secondary-container) !important;
+  color: var(--md-sys-color-on-secondary-container) !important;
+}
+
+/* Engine logo as a monochrome glyph. switcher/boot.js copies the engine
+   icon into --m3-engine-icon and sets [m3-engine-icon]; here Firefox's own
+   colored icon collapses to 0 and a filtered copy takes its place. Without
+   the startup hook none of this applies and the colored icon stays. */
+.searchmode-switcher[m3-engine-icon] {
+  --icon-size: 0px !important;
+}
+
+.searchmode-switcher[m3-engine-icon] .searchmode-switcher-content::before {
+  content: "";
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin-inline-end: 2px;
+  background: var(--m3-engine-icon) center / contain no-repeat;
+  filter: var(--m3-engine-icon-filter);
+}
+
+:root {
+  /* icons/mono.svg makes a white glyph that keeps the logo's inner shapes;
+     light mode darkens it to on-surface. */
+  --m3-engine-icon-filter: url("icons/mono.svg#mono") brightness(0.15);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --m3-engine-icon-filter: url("icons/mono.svg#mono");
+  }
+}
+
+#urlbar-search-mode-indicator {
+  background-color: var(--md-sys-color-secondary-container) !important;
+  color: var(--md-sys-color-on-secondary-container) !important;
+  padding-inline: 8px !important;
+}
+
+/* Engine picker menu (a panel-list): Firefox sets its colors on the element
+   itself, so the :root tokens in bridge.css do not reach it. */
+.searchmode-switcher-panel-list,
+panel-list {
+  --panel-list-background-color: var(--md-sys-color-surface-container-high) !important;
+  --panel-list-text-color: var(--md-sys-color-on-surface) !important;
+  --panel-list-border-color: transparent !important;
+  --panel-list-border-radius: var(--md-sys-shape-corner-large-increased) !important;
+  --panel-list-box-shadow: var(--m3-elev-2) !important;
+  --panel-item-button-border-radius: var(--md-sys-shape-corner-full) !important;
+  --button-background-color-ghost-hover: var(--md-sys-color-secondary-container) !important;
+  --button-text-color-ghost-hover: var(--md-sys-color-on-secondary-container) !important;
+}
+
+/* Bookmarked star uses the primary role. */
+#star-button[starred] {
+  fill: var(--md-sys-color-primary) !important;
+}
+
+/* Remote-control stripes (automation) stay visible but tinted. */
+#urlbar[remotecontrol] > .urlbar-background {
+  background-image: repeating-linear-gradient(-45deg, transparent 0 18px, color-mix(in srgb, var(--md-sys-color-error) 18%, transparent) 18px 36px) !important;
+}
+
+/* -- Results sheet ---------------------------------------------------------- */
+
+.urlbarView {
+  font-family: var(--m3-font-plain) !important;
+  margin-inline: 0 !important;
+  padding-block: 4px 8px !important;
+}
+
+.urlbarView-body-inner,
+.urlbarView-results {
+  border: none !important;
+}
+
+.urlbarView-row {
+  border-radius: var(--md-sys-shape-corner-full) !important;
+  margin-inline: 6px !important;
+  margin-block: 1px !important;
+  transition: background-color var(--m3-dur-short) var(--m3-ease-standard) !important;
+}
+
+.urlbarView-row-inner {
+  border-radius: var(--md-sys-shape-corner-full) !important;
+  padding-inline: 12px !important;
+}
+
+.urlbarView-row:not([selected]):hover > .urlbarView-row-inner,
+.urlbarView-row[row-selectable]:not([selected]):hover {
+  background-color: var(--m3-hover) !important;
+}
+
+.urlbarView-row[selected] > .urlbarView-row-inner,
+.urlbarView-row[row-selectable][selected] {
+  background-color: var(--md-sys-color-secondary-container) !important;
+  color: var(--md-sys-color-on-secondary-container) !important;
+}
+
+.urlbarView-row[selected] :is(.urlbarView-url, .urlbarView-action, .urlbarView-title-separator, .urlbarView-row-body-description) {
+  color: var(--md-sys-color-on-secondary-container) !important;
+}
+
+.urlbarView-url,
+.urlbarView-action {
+  color: var(--md-sys-color-primary) !important;
+}
+
+/* Favicons sit in a tonal circle, like Android app shortcuts. */
+.urlbarView-favicon {
+  border-radius: var(--md-sys-shape-corner-extra-small) !important;
+  fill: var(--md-sys-color-on-surface-variant) !important;
+}
+
+.urlbarView-type-icon {
+  fill: var(--md-sys-color-primary) !important;
+}
+
+/* Group labels ("Firefox Suggest", "Google suggestions"). */
+.urlbarView-row[label]::before {
+  color: var(--md-sys-color-primary) !important;
+  font-weight: 600 !important;
+  font-size: 0.8em !important;
+  letter-spacing: 0.4px;
+  text-transform: none !important;
+  margin-inline-start: 16px !important;
+}
+
+.urlbarView-button {
+  border-radius: var(--md-sys-shape-corner-full) !important;
+}
+
+/* One-off search engine buttons: circular chips. */
+.search-one-offs {
+  border-top: 1px solid var(--md-sys-color-outline-variant) !important;
+  margin-inline: 14px !important;
+  padding-block: 8px 2px !important;
+}
+
+.searchbar-engine-one-off-item {
+  border-radius: var(--md-sys-shape-corner-full) !important;
+  min-width: 36px !important;
+  height: 36px !important;
+  margin-inline-end: 4px !important;
+}
+
+.searchbar-engine-one-off-item:hover {
+  background-color: var(--m3-hover) !important;
+}
+
+.searchbar-engine-one-off-item[selected] {
+  background-color: var(--md-sys-color-secondary-container) !important;
+}
+
+/* -- Separate search bar (if enabled) ------------------------------------- */
+
+#searchbar,
+#searchbar-new {
+  border-radius: var(--md-sys-shape-corner-full) !important;
+  background-color: var(--md-sys-color-surface-container-highest) !important;
+  border: none !important;
+}
+
+/* -- Narrow windows ------------------------------------------------------- */
+
+@media (max-width: 700px) {
+  :root {
+    --m3-omnibox-height: 38px;
+  }
+}

@@ -1,0 +1,344 @@
+/* ==========================================================================
+   Material You for Firefox: built-in pages (loaded by userContent.css)
+   Settings, Add-ons, Downloads, Firefox View, about:config, Passwords,
+   Profiles, Troubleshooting, Protections and error pages.
+
+   These pages are built from Firefox's design-system tokens, so this file
+   maps M3 roles onto those tokens; shadow-DOM widgets (moz-card, moz-toggle,
+   moz-box-*, moz-page-nav...) inherit them from :root. Every rule is scoped
+   with @-moz-document, so websites are never touched.
+   ========================================================================== */
+
+@namespace xul url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+@-moz-document url-prefix("about:preferences"), url-prefix("about:settings"),
+  url-prefix("about:addons"), url-prefix("about:downloads"),
+  url-prefix("about:firefoxview"), url-prefix("about:config"),
+  url-prefix("about:logins"), url-prefix("about:profiles"),
+  url-prefix("about:support"), url-prefix("about:protections"),
+  url-prefix("about:certerror"), url-prefix("about:neterror"),
+  url-prefix("about:sessionrestore"), url-prefix("about:welcome"),
+  url-prefix("about:editprofile"), url-prefix("about:newprofile"),
+  url-prefix("about:deleteprofile"), url-prefix("about:translations") {
+
+  /* Firefox's widgets redefine their own tokens on :host inside their
+     shadow roots, so values set only on :root never reach them. Setting the
+     tokens on the host elements too wins over those :host rules. */
+  :root,
+  :is(moz-badge, moz-box-group, moz-box-item, moz-box-button, moz-box-link,
+      moz-breadcrumb, moz-breadcrumb-group, moz-button, moz-button-group,
+      moz-card, moz-checkbox, moz-fieldset, moz-input-color, moz-input-folder,
+      moz-input-search, moz-input-text, moz-message-bar, moz-page-header,
+      moz-page-nav, moz-page-nav-button, moz-promo, moz-radio, moz-radio-group,
+      moz-reorderable-list, moz-segmented-control, moz-select, moz-textarea,
+      moz-toggle, moz-visual-picker, moz-visual-picker-item, panel-list,
+      panel-item, setting-group, setting-control) {
+    --m3-font: "Google Sans Flex", "Google Sans", "Google Sans Text", "Roboto Flex", "Roboto", "Inter", system-ui, sans-serif;
+    --m3-hover: color-mix(in srgb, var(--md-sys-color-on-surface) 8%, transparent);
+    --m3-pressed: color-mix(in srgb, var(--md-sys-color-on-surface) 12%, transparent);
+
+    /* Surfaces and text */
+    --background-color-canvas: var(--md-sys-color-surface) !important;
+    --background-color-box: var(--md-sys-color-surface-container-low) !important;
+    --background-color-box-info: var(--md-sys-color-surface-container) !important;
+    --background-color-list-item-hover: var(--m3-hover) !important;
+    --background-color-dimmed: var(--md-sys-color-surface-container-high) !important;
+    --background-color-information: var(--md-sys-color-secondary-container) !important;
+    --background-color-warning: var(--md-sys-color-tertiary-container) !important;
+    --background-color-critical: var(--md-sys-color-error-container) !important;
+    --text-color: var(--md-sys-color-on-surface) !important;
+    --text-color-deemphasized: var(--md-sys-color-on-surface-variant) !important;
+    --text-color-list-item-hover: var(--md-sys-color-on-surface) !important;
+    --text-color-error: var(--md-sys-color-error) !important;
+    --icon-color: var(--md-sys-color-on-surface-variant) !important;
+
+    /* Accent */
+    --color-accent-primary: var(--md-sys-color-primary) !important;
+    --color-accent-primary-hover: color-mix(in srgb, var(--md-sys-color-on-primary) 8%, var(--md-sys-color-primary)) !important;
+    --color-accent-primary-active: color-mix(in srgb, var(--md-sys-color-on-primary) 14%, var(--md-sys-color-primary)) !important;
+    --color-accent-primary-selected: var(--md-sys-color-primary) !important;
+    --text-color-accent-primary-selected: var(--md-sys-color-on-primary) !important;
+    --focus-outline-color: var(--md-sys-color-primary) !important;
+    --link-color: var(--md-sys-color-primary) !important;
+    --link-color-hover: var(--md-sys-color-primary) !important;
+    --link-color-active: var(--md-sys-color-primary) !important;
+    --link-color-visited: var(--md-sys-color-primary) !important;
+
+    /* Borders: M3 cards are filled, not outlined */
+    --border-color: var(--md-sys-color-outline-variant) !important;
+    --border-color-card: transparent !important;
+    --border-color-deemphasized: var(--md-sys-color-outline-variant) !important;
+    --border-color-interactive: var(--md-sys-color-outline) !important;
+    --border-color-interactive-hover: var(--md-sys-color-on-surface) !important;
+    --border-color-interactive-active: var(--md-sys-color-primary) !important;
+    --border-color-selected: var(--md-sys-color-primary) !important;
+
+    /* Shape */
+    --border-radius-small: 8px !important;
+    --border-radius-medium: 12px !important;
+    --border-radius-large: 16px !important;
+    --border-radius-xlarge: 28px !important;
+
+    /* Buttons */
+    --button-border-radius: 999px !important;
+    --button-font-weight: 500 !important;
+    --button-background-color: var(--md-sys-color-surface-container-highest) !important;
+    --button-background-color-hover: color-mix(in srgb, var(--md-sys-color-on-surface) 8%, var(--md-sys-color-surface-container-highest)) !important;
+    --button-background-color-active: color-mix(in srgb, var(--md-sys-color-on-surface) 14%, var(--md-sys-color-surface-container-highest)) !important;
+    --button-text-color: var(--md-sys-color-primary) !important;
+    --button-text-color-hover: var(--md-sys-color-primary) !important;
+    --button-text-color-active: var(--md-sys-color-primary) !important;
+    --button-border-color: transparent !important;
+    --button-border-color-hover: transparent !important;
+    --button-border-color-active: transparent !important;
+    --button-background-color-primary: var(--md-sys-color-primary) !important;
+    --button-background-color-primary-hover: color-mix(in srgb, var(--md-sys-color-on-primary) 8%, var(--md-sys-color-primary)) !important;
+    --button-background-color-primary-active: color-mix(in srgb, var(--md-sys-color-on-primary) 14%, var(--md-sys-color-primary)) !important;
+    --button-text-color-primary: var(--md-sys-color-on-primary) !important;
+    --button-text-color-primary-hover: var(--md-sys-color-on-primary) !important;
+    --button-text-color-primary-active: var(--md-sys-color-on-primary) !important;
+    --button-border-color-primary: transparent !important;
+    --button-background-color-ghost-hover: var(--m3-hover) !important;
+    --button-background-color-ghost-active: var(--m3-pressed) !important;
+    --button-background-color-destructive: var(--md-sys-color-error) !important;
+    --button-text-color-destructive: var(--md-sys-color-on-error) !important;
+
+    /* Settings navigation: M3 navigation drawer items */
+    --page-nav-button-border-radius: 999px !important;
+    --page-nav-button-background-color: transparent !important;
+    --page-nav-button-border-color: transparent !important;
+    --page-nav-button-border-color-hover: transparent !important;
+    --page-nav-button-border-color-active: transparent !important;
+    --page-nav-button-text-color-active: var(--md-sys-color-on-surface) !important;
+    --page-nav-button-background-color-hover: var(--m3-hover) !important;
+    --page-nav-button-background-color-active: var(--m3-pressed) !important;
+    --page-nav-button-background-color-selected: var(--md-sys-color-secondary-container) !important;
+    --page-nav-button-text-color: var(--md-sys-color-on-surface-variant) !important;
+    --page-nav-button-text-color-hover: var(--md-sys-color-on-surface) !important;
+    --page-nav-button-text-color-selected: var(--md-sys-color-on-secondary-container) !important;
+    --page-nav-button-indicator-background-color: transparent !important;
+    --page-nav-border-color: transparent !important;
+    --page-nav-hr-background-color: var(--md-sys-color-outline-variant) !important;
+
+    /* Cards and grouped rows */
+    --card-background-color: var(--md-sys-color-surface-container-low) !important;
+    --card-border: none !important;
+    --card-border-radius: 28px !important;
+    --card-box-shadow: none !important;
+    --box-border-color: var(--md-sys-color-surface) !important;
+    --box-border-width: 2px !important;
+    --box-button-text-color: var(--md-sys-color-on-surface) !important;
+    --box-button-text-color-hover: var(--md-sys-color-on-surface) !important;
+    --box-button-text-color-active: var(--md-sys-color-on-surface) !important;
+    --box-icon-fill: var(--md-sys-color-on-surface-variant) !important;
+    --box-border-radius: 16px !important;
+    --box-background-color: var(--md-sys-color-surface-container) !important;
+    --box-button-background-color: var(--md-sys-color-surface-container) !important;
+    --box-background-color-hover: color-mix(in srgb, var(--md-sys-color-on-surface) 8%, var(--md-sys-color-surface-container)) !important;
+    --box-button-background-color-hover: color-mix(in srgb, var(--md-sys-color-on-surface) 8%, var(--md-sys-color-surface-container)) !important;
+    --box-button-background-color-active: color-mix(in srgb, var(--md-sys-color-on-surface) 12%, var(--md-sys-color-surface-container)) !important;
+
+    /* Inputs */
+    --input-text-background-color: var(--md-sys-color-surface-container-highest) !important;
+    --input-text-border: 2px solid transparent !important;
+    --input-text-border-radius: 12px !important;
+    --input-search-border-radius: 999px !important;
+    --select-background-color: var(--md-sys-color-surface-container-highest) !important;
+    --select-background-color-hover: color-mix(in srgb, var(--md-sys-color-on-surface) 8%, var(--md-sys-color-surface-container-highest)) !important;
+    --select-border-color: transparent !important;
+    --select-border-radius: 999px !important;
+    --select-text-color: var(--md-sys-color-on-surface) !important;
+
+    /* M3 switch */
+    --toggle-background-color: var(--md-sys-color-surface-container-highest) !important;
+    --toggle-background-color-hover: var(--md-sys-color-surface-container-highest) !important;
+    --toggle-border-color: var(--md-sys-color-outline) !important;
+    --toggle-border-color-hover: var(--md-sys-color-outline) !important;
+    --toggle-dot-background-color: var(--md-sys-color-outline) !important;
+    --toggle-dot-background-color-hover: var(--md-sys-color-on-surface-variant) !important;
+    --toggle-background-color-pressed: var(--md-sys-color-primary) !important;
+    --toggle-background-color-pressed-hover: var(--md-sys-color-primary) !important;
+    --toggle-dot-background-color-on-pressed: var(--md-sys-color-on-primary) !important;
+    --toggle-border-radius: 999px !important;
+
+    /* Message bars and promos */
+    --message-bar-border-radius: 16px !important;
+    --message-bar-border-color: transparent !important;
+    --promo-border-radius: 28px !important;
+    --promo-border-color: transparent !important;
+    --promo-background-color: var(--md-sys-color-primary-container) !important;
+    --promo-heading-text-color: var(--md-sys-color-on-primary-container) !important;
+    --promo-message-text-color: var(--md-sys-color-on-primary-container) !important;
+
+    /* Older in-content tokens still used by some pages */
+    --in-content-page-background: var(--md-sys-color-surface) !important;
+    --in-content-page-color: var(--md-sys-color-on-surface) !important;
+    --in-content-box-background: var(--md-sys-color-surface-container-low) !important;
+    --in-content-box-border-color: transparent !important;
+    --in-content-box-info-background: var(--md-sys-color-surface-container) !important;
+    --in-content-item-hover: var(--m3-hover) !important;
+    --in-content-item-selected: var(--md-sys-color-secondary-container) !important;
+    --in-content-item-selected-text: var(--md-sys-color-on-secondary-container) !important;
+    --in-content-primary-button-background: var(--md-sys-color-primary) !important;
+    --in-content-primary-button-text-color: var(--md-sys-color-on-primary) !important;
+    --in-content-accent-color: var(--md-sys-color-primary) !important;
+    --in-content-focus-outline-color: var(--md-sys-color-primary) !important;
+    --in-content-table-background: var(--md-sys-color-surface-container-low) !important;
+    --in-content-table-header-background: var(--md-sys-color-secondary-container) !important;
+    --in-content-table-header-color: var(--md-sys-color-on-secondary-container) !important;
+
+    accent-color: var(--md-sys-color-primary) !important;
+  }
+
+  body,
+  html {
+    background-color: var(--md-sys-color-surface) !important;
+    color: var(--md-sys-color-on-surface) !important;
+    font-family: var(--m3-font) !important;
+  }
+
+  h1, h2, h3,
+  .main-heading,
+  .header-name,
+  .page-title {
+    font-family: var(--m3-font) !important;
+    letter-spacing: 0;
+  }
+
+  /* Legacy XUL buttons (still used in parts of Settings and dialogs).
+     User sheets also reach into shadow roots, so card-like buttons
+     (visual picker cards, box rows) must be excluded here. */
+  button:not(.ghost-button, [type="ghost"], .close-button, .tab-button, .picker-item, [class*="box"]):not([class*="icon"]),
+  xul|button,
+  menulist {
+    border-radius: 999px !important;
+    border-color: transparent !important;
+  }
+
+  button.primary,
+  xul|button.primary,
+  button[default] {
+    background-color: var(--md-sys-color-primary) !important;
+    color: var(--md-sys-color-on-primary) !important;
+  }
+
+  input:is([type="text"], [type="search"], [type="number"], [type="url"], [type="email"], [type="password"]),
+  search-textbox,
+  textarea {
+    border-radius: 12px !important;
+  }
+
+  input[type="search"],
+  search-textbox,
+  moz-input-search {
+    border-radius: 999px !important;
+  }
+
+  /* Checkboxes and radios: primary role */
+  input:is([type="checkbox"], [type="radio"]),
+  xul|checkbox,
+  xul|radio {
+    accent-color: var(--md-sys-color-primary) !important;
+  }
+
+  /* -- Settings (about:preferences) ------------------------------------- */
+
+  #categories > .category,
+  moz-page-nav-button {
+    border-radius: 999px !important;
+  }
+
+  #categories > .category[selected],
+  #categories > .category[aria-selected="true"] {
+    background-color: var(--md-sys-color-secondary-container) !important;
+    color: var(--md-sys-color-on-secondary-container) !important;
+  }
+
+  #categories > .category:not([selected]):hover {
+    background-color: var(--m3-hover) !important;
+  }
+
+  .sticky-container,
+  #searchInput {
+    background-color: transparent !important;
+  }
+
+  groupbox,
+  .subcategory + groupbox {
+    border-radius: 28px !important;
+  }
+
+  /* Image choice cards (Browser layout, Website appearance). Their inner
+     button would otherwise take the full-pill --button-border-radius. */
+  moz-visual-picker-item {
+    --button-border-radius: 20px !important;
+    --visual-picker-item-border-radius: 20px !important;
+    --visual-picker-item-border-color: var(--md-sys-color-outline-variant) !important;
+    --button-text-color-ghost: var(--md-sys-color-on-surface) !important;
+    --button-text-color-ghost-hover: var(--md-sys-color-on-surface) !important;
+    --button-text-color-ghost-active: var(--md-sys-color-on-surface) !important;
+  }
+
+  /* -- Add-ons (about:addons) ------------------------------------------- */
+
+  addon-card .card,
+  .card {
+    border-radius: 24px !important;
+    background-color: var(--md-sys-color-surface-container-low) !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  addon-card .card:hover {
+    background-color: var(--md-sys-color-surface-container) !important;
+  }
+
+  .addon-icon,
+  .card-heading-image {
+    border-radius: 12px !important;
+  }
+
+  #categories > .category[selected] .category-name,
+  .sidebar-footer-button:hover {
+    color: inherit !important;
+  }
+
+  .sidebar-footer-button,
+  .sidebar-footer-link {
+    border-radius: 999px !important;
+  }
+
+  /* -- Downloads library page ------------------------------------------- */
+
+  #downloadsListBox > richlistitem {
+    border-radius: 16px !important;
+    margin: 4px 12px !important;
+  }
+
+  #downloadsListBox > richlistitem[selected] {
+    background-color: var(--md-sys-color-secondary-container) !important;
+    color: var(--md-sys-color-on-secondary-container) !important;
+  }
+
+  /* -- about:config ------------------------------------------------------- */
+
+  #prefs {
+    border-radius: 16px !important;
+    overflow: clip;
+    background-color: var(--md-sys-color-surface-container-low) !important;
+  }
+
+  #prefs > tr:hover {
+    background-color: var(--m3-hover) !important;
+  }
+
+  #prefs > tr.has-user-value {
+    font-weight: 600;
+  }
+
+  /* -- Scrollbars ------------------------------------------------------------ */
+
+  :root {
+    scrollbar-color: var(--md-sys-color-outline-variant) transparent;
+  }
+}

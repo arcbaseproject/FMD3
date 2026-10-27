@@ -1,0 +1,163 @@
+/* ==========================================================================
+   Material You for Firefox: design tokens
+   Single source of truth for color, shape, type, elevation and motion.
+   Every other file reads these variables; none hardcode colors.
+
+   Color: static fallback palette (M3 tonal-spot from seed #0B57D0, the
+   Google blue). palette.generated.css, written by matugen, is imported
+   after this file and overrides these roles when it exists.
+   ========================================================================== */
+
+/* -- Color roles ------------------------------------------------------------ */
+:root {
+  --md-sys-color-primary: #495d92;
+  --md-sys-color-on-primary: #ffffff;
+  --md-sys-color-primary-container: #dae2ff;
+  --md-sys-color-on-primary-container: #001847;
+  --md-sys-color-secondary: #585e71;
+  --md-sys-color-on-secondary: #ffffff;
+  --md-sys-color-secondary-container: #dce2f9;
+  --md-sys-color-on-secondary-container: #151b2c;
+  --md-sys-color-tertiary: #735471;
+  --md-sys-color-on-tertiary: #ffffff;
+  --md-sys-color-tertiary-container: #fed7f9;
+  --md-sys-color-on-tertiary-container: #2b122b;
+  --md-sys-color-error: #ba1a1a;
+  --md-sys-color-on-error: #ffffff;
+  --md-sys-color-error-container: #ffdad6;
+  --md-sys-color-on-error-container: #410002;
+  --md-sys-color-surface: #faf8ff;
+  --md-sys-color-on-surface: #1a1b21;
+  --md-sys-color-surface-variant: #e1e2ec;
+  --md-sys-color-on-surface-variant: #45464f;
+  --md-sys-color-surface-dim: #dad9e0;
+  --md-sys-color-surface-bright: #faf8ff;
+  --md-sys-color-surface-container-lowest: #ffffff;
+  --md-sys-color-surface-container-low: #f4f3fa;
+  --md-sys-color-surface-container: #eeedf4;
+  --md-sys-color-surface-container-high: #e8e7ef;
+  --md-sys-color-surface-container-highest: #e2e2e9;
+  --md-sys-color-outline: #757780;
+  --md-sys-color-outline-variant: #c5c6d0;
+  --md-sys-color-inverse-surface: #2f3036;
+  --md-sys-color-inverse-on-surface: #f1f0f7;
+  --md-sys-color-inverse-primary: #b2c5ff;
+  --md-sys-color-shadow: #000000;
+  --md-sys-color-scrim: #000000;
+  --md-sys-color-surface-tint: #495d92;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --md-sys-color-primary: #b2c5ff;
+    --md-sys-color-on-primary: #172e60;
+    --md-sys-color-primary-container: #304578;
+    --md-sys-color-on-primary-container: #dae2ff;
+    --md-sys-color-secondary: #c0c6dd;
+    --md-sys-color-on-secondary: #2a3042;
+    --md-sys-color-secondary-container: #404659;
+    --md-sys-color-on-secondary-container: #dce2f9;
+    --md-sys-color-tertiary: #e1bbdd;
+    --md-sys-color-on-tertiary: #412741;
+    --md-sys-color-tertiary-container: #5a3d59;
+    --md-sys-color-on-tertiary-container: #fed7f9;
+    --md-sys-color-error: #ffb4ab;
+    --md-sys-color-on-error: #690005;
+    --md-sys-color-error-container: #93000a;
+    --md-sys-color-on-error-container: #ffdad6;
+    --md-sys-color-surface: #121318;
+    --md-sys-color-on-surface: #e2e2e9;
+    --md-sys-color-surface-variant: #45464f;
+    --md-sys-color-on-surface-variant: #c5c6d0;
+    --md-sys-color-surface-dim: #121318;
+    --md-sys-color-surface-bright: #38393f;
+    --md-sys-color-surface-container-lowest: #0d0e13;
+    --md-sys-color-surface-container-low: #1a1b21;
+    --md-sys-color-surface-container: #1e1f25;
+    --md-sys-color-surface-container-high: #282a2f;
+    --md-sys-color-surface-container-highest: #33343a;
+    --md-sys-color-outline: #8f909a;
+    --md-sys-color-outline-variant: #45464f;
+    --md-sys-color-inverse-surface: #e2e2e9;
+    --md-sys-color-inverse-on-surface: #2f3036;
+    --md-sys-color-inverse-primary: #495d92;
+    --md-sys-color-shadow: #000000;
+    --md-sys-color-scrim: #000000;
+    --md-sys-color-surface-tint: #b2c5ff;
+  }
+}
+
+/* -- Shape, type, elevation, motion ---------------------------------------- */
+:root {
+  /* M3 shape scale */
+  --md-sys-shape-corner-none: 0;
+  --md-sys-shape-corner-extra-small: 4px;
+  --md-sys-shape-corner-small: 8px;
+  --md-sys-shape-corner-medium: 12px;
+  --md-sys-shape-corner-large: 16px;
+  --md-sys-shape-corner-large-increased: 20px;
+  --md-sys-shape-corner-extra-large: 28px;
+  --md-sys-shape-corner-full: 999px;
+
+  /* Typeface. Google Sans Flex / Roboto Flex if installed, else system. */
+  --m3-font-brand: "Google Sans Flex", "Google Sans", "Google Sans Text", "Roboto Flex", "Roboto", "Inter", system-ui, sans-serif;
+  --m3-font-plain: "Google Sans Text", "Google Sans Flex", "Roboto Flex", "Roboto", "Inter", system-ui, sans-serif;
+
+  /* State layer opacities (M3 spec) */
+  --m3-state-hover: 8%;
+  --m3-state-focus: 10%;
+  --m3-state-pressed: 10%;
+  --m3-state-dragged: 16%;
+
+  /* Motion: M3 Expressive easing and duration tokens.
+     The spatial curves overshoot slightly, approximating the spring specs. */
+  --m3-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --m3-ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
+  --m3-ease-emphasized-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --m3-ease-emphasized-accelerate: cubic-bezier(0.3, 0, 0.8, 0.15);
+  --m3-ease-spatial-fast: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --m3-ease-spatial-default: cubic-bezier(0.27, 1.06, 0.18, 1);
+  --m3-dur-short: 150ms;
+  --m3-dur-medium: 250ms;
+  --m3-dur-long: 400ms;
+
+  /* Layout metrics */
+  --m3-gap: 6px;
+  --m3-toolbar-pad: 8px;
+  --m3-tab-height: 36px;
+  --m3-button-size: 36px;
+  --m3-omnibox-height: 44px;
+  --m3-content-inset: 8px;
+
+  /* Derived state colors */
+  --m3-hover: color-mix(in srgb, var(--md-sys-color-on-surface) var(--m3-state-hover), transparent);
+  --m3-pressed: color-mix(in srgb, var(--md-sys-color-on-surface) 14%, transparent);
+  --m3-hover-on-secondary: color-mix(in srgb, var(--md-sys-color-on-secondary-container) var(--m3-state-hover), transparent);
+  --m3-focus-ring: 0 0 0 2px var(--md-sys-color-primary);
+
+  /* Elevation: M3 levels as soft two-layer shadows, tinted by the shadow role. */
+  --m3-elev-1: 0 1px 2px color-mix(in srgb, var(--md-sys-color-shadow) 18%, transparent), 0 1px 3px 1px color-mix(in srgb, var(--md-sys-color-shadow) 9%, transparent);
+  --m3-elev-2: 0 1px 2px color-mix(in srgb, var(--md-sys-color-shadow) 18%, transparent), 0 2px 6px 2px color-mix(in srgb, var(--md-sys-color-shadow) 10%, transparent);
+  --m3-elev-3: 0 4px 8px 3px color-mix(in srgb, var(--md-sys-color-shadow) 12%, transparent), 0 1px 3px color-mix(in srgb, var(--md-sys-color-shadow) 20%, transparent);
+  --m3-elev-4: 0 6px 10px 4px color-mix(in srgb, var(--md-sys-color-shadow) 13%, transparent), 0 2px 3px color-mix(in srgb, var(--md-sys-color-shadow) 20%, transparent);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --m3-pressed: color-mix(in srgb, var(--md-sys-color-on-surface) 16%, transparent);
+    --m3-elev-1: 0 1px 2px color-mix(in srgb, var(--md-sys-color-shadow) 40%, transparent), 0 1px 3px 1px color-mix(in srgb, var(--md-sys-color-shadow) 22%, transparent);
+    --m3-elev-2: 0 1px 2px color-mix(in srgb, var(--md-sys-color-shadow) 40%, transparent), 0 2px 6px 2px color-mix(in srgb, var(--md-sys-color-shadow) 24%, transparent);
+    --m3-elev-3: 0 4px 8px 3px color-mix(in srgb, var(--md-sys-color-shadow) 30%, transparent), 0 1px 3px color-mix(in srgb, var(--md-sys-color-shadow) 45%, transparent);
+    --m3-elev-4: 0 6px 10px 4px color-mix(in srgb, var(--md-sys-color-shadow) 32%, transparent), 0 2px 3px color-mix(in srgb, var(--md-sys-color-shadow) 45%, transparent);
+  }
+}
+
+/* Reduced motion: keep state changes, drop movement. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --m3-ease-spatial-fast: var(--m3-ease-standard);
+    --m3-ease-spatial-default: var(--m3-ease-standard);
+    --m3-dur-medium: 1ms;
+    --m3-dur-long: 1ms;
+  }
+}

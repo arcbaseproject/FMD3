@@ -1,0 +1,317 @@
+/* ==========================================================================
+   Material You for Firefox: tabs
+   Floating pill tabs. The selected tab takes the secondary container (tonal)
+   role, the way Android highlights the active destination in a nav rail.
+   ========================================================================== */
+
+:root {
+  --tab-min-height: var(--m3-tab-height) !important;
+  --tab-border-radius: var(--md-sys-shape-corner-full) !important;
+  --tab-margin-block: 4px !important;
+  --tab-padding-inline: 12px !important;
+  --tab-min-width: 76px !important;
+  --tab-background-color: transparent !important;
+  --tab-background-color-hover: var(--m3-hover) !important;
+  --tab-background-color-selected: var(--md-sys-color-secondary-container) !important;
+  --tab-text-color: var(--md-sys-color-on-surface-variant) !important;
+  --tab-text-color-hover: var(--md-sys-color-on-surface) !important;
+  --tab-text-color-selected: var(--md-sys-color-on-secondary-container) !important;
+  --tab-selected-textcolor: var(--md-sys-color-on-secondary-container) !important;
+  --tab-selected-bgcolor: var(--md-sys-color-secondary-container) !important;
+  --tab-border-color: transparent !important;
+  --tab-border-color-hover: transparent !important;
+  --tab-border-color-selected: transparent !important;
+  --tab-border-color-accent: var(--md-sys-color-secondary-container) !important;
+  --tab-box-shadow-selected: none !important;
+  --tab-icon-fill-loading: var(--md-sys-color-primary) !important;
+  --tab-attention-dot-color: var(--md-sys-color-primary) !important;
+  --tab-dragover-outline-color: var(--md-sys-color-primary) !important;
+  --tab-hover-background-color: var(--m3-hover) !important;
+  --tab-loading-fill: var(--md-sys-color-primary) !important;
+  --tabstrip-inner-border: transparent !important;
+}
+
+/* -- Tab strip ------------------------------------------------------------- */
+
+#TabsToolbar {
+  padding-inline: var(--m3-toolbar-pad) !important;
+  padding-top: 6px !important;
+}
+
+#tabbrowser-tabs[orient="horizontal"] {
+  border-inline-start: none !important;
+  padding-inline-start: 0 !important;
+}
+
+/* No separators between tabs: spacing does that job. */
+.tabbrowser-tab::after,
+.tabbrowser-tab::before,
+#tabbrowser-tabs[orient="horizontal"] .tabbrowser-tab:not([pinned]) + .tabbrowser-tab::before {
+  display: none !important;
+  border: none !important;
+}
+
+#tabbrowser-tabs[orient="horizontal"] .tabbrowser-tab {
+  padding-inline: 2px !important;
+}
+
+/* -- Tab pill -------------------------------------------------------------- */
+
+.tab-background {
+  border: none !important;
+  outline: none !important;
+  border-radius: var(--md-sys-shape-corner-full) !important;
+  background: var(--tab-background-color) !important;
+  box-shadow: none !important;
+  transition:
+    background-color var(--m3-dur-medium) var(--m3-ease-standard),
+    box-shadow var(--m3-dur-medium) var(--m3-ease-standard),
+    border-radius var(--m3-dur-medium) var(--m3-ease-spatial-fast),
+    scale var(--m3-dur-medium) var(--m3-ease-spatial-fast) !important;
+}
+
+.tabbrowser-tab:hover > .tab-stack > .tab-background:not([selected], [multiselected]) {
+  background: var(--tab-background-color-hover) !important;
+}
+
+.tab-background:is([selected], [multiselected]) {
+  background: var(--md-sys-color-secondary-container) !important;
+  box-shadow: var(--m3-elev-1) !important;
+}
+
+/* Pressing a tab gives a small, springy squish. */
+.tabbrowser-tab:not([selected]):hover:active > .tab-stack > .tab-background {
+  background: var(--m3-pressed) !important;
+  scale: 0.97;
+}
+
+/* Multi-selection: outlined pills, the selected one keeps its fill. */
+.tab-background[multiselected] {
+  background: color-mix(in srgb, var(--md-sys-color-secondary-container) 55%, transparent) !important;
+  outline: 2px solid var(--md-sys-color-primary) !important;
+  outline-offset: -2px !important;
+}
+
+.tab-background[multiselected][selected] {
+  background: var(--md-sys-color-secondary-container) !important;
+}
+
+/* Keyboard focus: M3 focus ring. */
+.tabbrowser-tab:focus-visible > .tab-stack > .tab-background,
+#tabbrowser-tabs .tabbrowser-tab.keyboard-focused-tab > .tab-stack > .tab-background {
+  outline: 2px solid var(--md-sys-color-primary) !important;
+  outline-offset: 1px !important;
+}
+
+/* -- Tab content ----------------------------------------------------------- */
+
+.tabbrowser-tab {
+  color: var(--tab-text-color) !important;
+}
+
+.tabbrowser-tab:hover {
+  color: var(--tab-text-color-hover) !important;
+}
+
+.tabbrowser-tab[selected] {
+  color: var(--md-sys-color-on-secondary-container) !important;
+}
+
+.tab-label {
+  font-family: var(--m3-font-plain) !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.1px;
+}
+
+.tabbrowser-tab[selected] .tab-label {
+  font-weight: 600 !important;
+}
+
+.tab-icon-image,
+.tab-throbber,
+.tab-icon-pending {
+  border-radius: var(--md-sys-shape-corner-extra-small);
+}
+
+#tabbrowser-tabs[orient="horizontal"] .tab-content {
+  padding-inline: 12px 6px !important;
+}
+
+/* Unloaded / discarded tabs fade back. */
+.tabbrowser-tab[pending] :is(.tab-icon-image, .tab-label) {
+  opacity: 0.55 !important;
+}
+
+/* -- Close button: 24px circle ---------------------------------------------- */
+
+.tab-close-button {
+  border-radius: var(--md-sys-shape-corner-full) !important;
+  fill: currentColor !important;
+  fill-opacity: 0.8 !important;
+  background-color: transparent !important;
+  outline: none !important;
+  transition:
+    background-color var(--m3-dur-short) var(--m3-ease-standard),
+    opacity var(--m3-dur-short) var(--m3-ease-standard),
+    scale var(--m3-dur-medium) var(--m3-ease-spatial-fast) !important;
+}
+
+#tabbrowser-tabs[orient="horizontal"] .tab-close-button {
+  width: 24px !important;
+  height: 24px !important;
+  padding: 6px !important;
+  margin-inline-end: 0 !important;
+}
+
+.tab-close-button:hover {
+  background-color: color-mix(in srgb, currentColor 12%, transparent) !important;
+  fill-opacity: 1 !important;
+}
+
+.tab-close-button:hover:active {
+  background-color: color-mix(in srgb, currentColor 18%, transparent) !important;
+  scale: 0.88;
+}
+
+/* Hide close button on unhovered background tabs; keep its space so the
+   label does not jump. Firefox already hides it on narrow tabs. */
+#tabbrowser-tabs[orient="horizontal"] .tabbrowser-tab:not([selected], :hover, [pinned]) .tab-close-button {
+  opacity: 0;
+}
+
+/* -- Audio, sharing, attention --------------------------------------------- */
+
+.tab-icon-overlay,
+.tab-audio-button {
+  border-radius: var(--md-sys-shape-corner-full) !important;
+}
+
+.tab-icon-overlay:is([soundplaying], [muted], [activemedia-blocked]) {
+  background-color: var(--md-sys-color-surface-container-highest) !important;
+  fill: var(--md-sys-color-on-surface) !important;
+  stroke: none !important;
+}
+
+.tabbrowser-tab:is([attention], [titlechanged]):not([selected]) .tab-content::after {
+  background-color: var(--md-sys-color-primary) !important;
+}
+
+/* -- Pinned tabs: circles -------------------------------------------------- */
+
+#tabbrowser-tabs[orient="horizontal"] .tabbrowser-tab[pinned] .tab-content {
+  padding-inline: 10px !important;
+}
+
+/* -- New tab button: tonal FAB-like circle -------------------------------- */
+
+#tabs-newtab-button,
+#new-tab-button,
+#tabbrowser-tabs[orient="horizontal"] #tabbrowser-arrowscrollbox-periphery > #tabs-newtab-button {
+  --toolbarbutton-inner-padding: 8px !important;
+  margin-inline: 4px !important;
+}
+
+:is(#tabs-newtab-button, #new-tab-button) > .toolbarbutton-icon {
+  background-color: transparent !important;
+  /* 50%, not 999px: see the note on toolbar buttons in frame.css. */
+  border-radius: 50% !important;
+  fill: var(--md-sys-color-on-surface-variant) !important;
+  width: calc(16px + 2 * var(--toolbarbutton-inner-padding)) !important;
+  height: calc(16px + 2 * var(--toolbarbutton-inner-padding)) !important;
+  transition:
+    background-color var(--m3-dur-short) var(--m3-ease-standard),
+    border-radius var(--m3-dur-medium) var(--m3-ease-spatial-fast),
+    rotate var(--m3-dur-long) var(--m3-ease-spatial-default) !important;
+}
+
+:is(#tabs-newtab-button, #new-tab-button):hover > .toolbarbutton-icon {
+  background-color: var(--md-sys-color-primary-container) !important;
+  fill: var(--md-sys-color-on-primary-container) !important;
+  border-radius: var(--md-sys-shape-corner-medium) !important;
+  rotate: 90deg;
+}
+
+/* Scroll buttons and list-all-tabs */
+#tabbrowser-arrowscrollbox::part(scrollbutton-up),
+#tabbrowser-arrowscrollbox::part(scrollbutton-down) {
+  border-radius: var(--md-sys-shape-corner-full) !important;
+  padding: 6px !important;
+}
+
+/* -- Tab groups ------------------------------------------------------------ */
+
+.tab-group-label {
+  border-radius: var(--md-sys-shape-corner-full) !important;
+  padding-inline: 10px !important;
+  font-family: var(--m3-font-brand) !important;
+  font-weight: 600 !important;
+}
+
+.tab-group-label-container {
+  padding-inline: 4px !important;
+}
+
+tab-group[collapsed] .tab-group-label {
+  border-radius: var(--md-sys-shape-corner-medium) !important;
+}
+
+/* The group underline becomes a soft pill. */
+tab-group .tab-group-line {
+  border-radius: var(--md-sys-shape-corner-full) !important;
+  height: 3px !important;
+}
+
+/* -- Hover preview card --------------------------------------------------- */
+
+#tab-preview-panel,
+.tab-preview-panel {
+  --panel-border-radius: var(--md-sys-shape-corner-large) !important;
+  --panel-background-color: var(--md-sys-color-surface-container-high) !important;
+  --panel-text-color: var(--md-sys-color-on-surface) !important;
+}
+
+.tab-preview-thumbnail-container {
+  border-radius: var(--md-sys-shape-corner-medium) !important;
+  overflow: clip;
+}
+
+/* -- Drag feedback --------------------------------------------------------- */
+
+.tabbrowser-tab[dragtarget] > .tab-stack > .tab-background {
+  box-shadow: var(--m3-elev-3) !important;
+  background: var(--md-sys-color-secondary-container) !important;
+}
+
+#tabbrowser-tabs[movingtab] .tabbrowser-tab[selected] > .tab-stack > .tab-background {
+  box-shadow: var(--m3-elev-3) !important;
+}
+
+/* -- Vertical tabs: full-width pills in the sidebar ------------------------ */
+
+#tabbrowser-tabs[orient="vertical"] {
+  --tab-min-height: 40px !important;
+
+  .tabbrowser-tab {
+    padding-inline: 0 !important;
+  }
+
+  .tab-background {
+    margin-inline: 0 !important;
+  }
+
+  .tab-background[selected] {
+    box-shadow: none !important;
+  }
+}
+
+/* -- Responsiveness -------------------------------------------------------- */
+
+@media (max-width: 700px) {
+  :root {
+    --tab-min-width: 48px !important;
+  }
+  #tabbrowser-tabs[orient="horizontal"] .tab-content {
+    padding-inline: 8px 4px !important;
+  }
+}

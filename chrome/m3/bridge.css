@@ -1,0 +1,180 @@
+/* ==========================================================================
+   Material You for Firefox: token bridge
+   Maps M3 color roles onto Firefox's own design tokens. Firefox styles most
+   of its UI from these tokens, so overriding them recolors elements we never
+   select directly (new widgets, dialogs, panels) and survives DOM changes.
+
+   userChrome.css is a user-origin sheet: its normal declarations lose to
+   Firefox's author sheets, so token overrides need !important.
+   ========================================================================== */
+
+:root {
+  /* Chrome follows the M3 palette, not the active Firefox theme. */
+  --m3-frame: var(--md-sys-color-surface-container);
+  --m3-frame-inactive: var(--md-sys-color-surface-container-low);
+  --m3-content-surface: var(--md-sys-color-surface);
+
+  font-family: var(--m3-font-plain) !important;
+
+  /* Design-system radii: one step rounder everywhere, per M3 shape scale */
+  --border-radius-small: var(--md-sys-shape-corner-small) !important;
+  --border-radius-medium: var(--md-sys-shape-corner-medium) !important;
+  --border-radius-large: var(--md-sys-shape-corner-large) !important;
+  --border-radius-xlarge: var(--md-sys-shape-corner-extra-large) !important;
+
+  /* Design-system accents */
+  --color-accent-primary: var(--md-sys-color-primary) !important;
+  --color-accent-primary-hover: color-mix(in srgb, var(--md-sys-color-primary) 88%, var(--md-sys-color-on-primary)) !important;
+  --color-accent-primary-active: color-mix(in srgb, var(--md-sys-color-primary) 80%, var(--md-sys-color-on-primary)) !important;
+  --color-accent-primary-selected: var(--md-sys-color-primary) !important;
+  --focus-outline-color: var(--md-sys-color-primary) !important;
+  --link-color: var(--md-sys-color-primary) !important;
+  --text-color-deemphasized: var(--md-sys-color-on-surface-variant) !important;
+  --border-color: var(--md-sys-color-outline-variant) !important;
+  --border-color-card: var(--md-sys-color-outline-variant) !important;
+  --border-color-deemphasized: var(--md-sys-color-outline-variant) !important;
+
+  /* Toolbox (tab strip + toolbars) */
+  --toolbox-background-color: var(--m3-frame) !important;
+  --toolbox-background-color-inactive: var(--m3-frame-inactive) !important;
+  --toolbox-background-image: none !important;
+  --toolbox-text-color: var(--md-sys-color-on-surface) !important;
+  --toolbox-text-color-inactive: var(--md-sys-color-on-surface-variant) !important;
+  --toolbar-background-color: var(--m3-frame) !important;
+  --toolbar-bgcolor: var(--m3-frame) !important;
+  --toolbar-text-color: var(--md-sys-color-on-surface) !important;
+  --toolbar-color: var(--md-sys-color-on-surface) !important;
+  --toolbar-border: transparent !important;
+  --chrome-content-separator-color: transparent !important;
+  --tabpanel-background-color: var(--m3-content-surface) !important;
+
+  /* Toolbar buttons */
+  --toolbarbutton-icon-fill: var(--md-sys-color-on-surface-variant) !important;
+  --toolbarbutton-icon-fill-attention: var(--md-sys-color-primary) !important;
+  --toolbarbutton-icon-fill-attention-text: var(--md-sys-color-on-primary) !important;
+  --toolbarbutton-background-color-hover: var(--m3-hover) !important;
+  --toolbarbutton-background-color-active: var(--m3-pressed) !important;
+  --toolbarbutton-hover-background: var(--m3-hover) !important;
+  --toolbarbutton-active-background: var(--m3-pressed) !important;
+  --toolbarbutton-border-radius: var(--md-sys-shape-corner-full) !important;
+  --toolbarbutton-outline-color: transparent !important;
+  --toolbarbutton-outline-color-hover: transparent !important;
+  --toolbarbutton-outline-color-active: transparent !important;
+  --toolbarbutton-outline-color-selected: transparent !important;
+
+  /* Fields (urlbar, search, find bar) */
+  --toolbar-field-background-color: var(--md-sys-color-surface-container-highest) !important;
+  --toolbar-field-background-color-focus: var(--md-sys-color-surface-container-lowest) !important;
+  --toolbar-field-text-color: var(--md-sys-color-on-surface) !important;
+  --toolbar-field-text-color-focus: var(--md-sys-color-on-surface) !important;
+  --toolbar-field-border-color: transparent !important;
+  --toolbar-field-border-color-focus: transparent !important;
+  --toolbar-field-focus-border-color: var(--md-sys-color-primary) !important;
+  --toolbar-field-focus-background-color: var(--md-sys-color-surface-container-lowest) !important;
+
+  /* Panels and menus */
+  --panel-background-color: var(--md-sys-color-surface-container-high) !important;
+  --panel-text-color: var(--md-sys-color-on-surface) !important;
+  --panel-border-color: transparent !important;
+  --panel-border-radius: var(--md-sys-shape-corner-large-increased) !important;
+  --panel-separator-color: var(--md-sys-color-outline-variant) !important;
+  --panel-icon-fill: var(--md-sys-color-on-surface-variant) !important;
+  --panel-item-hover-bgcolor: var(--m3-hover) !important;
+  --panel-item-active-bgcolor: var(--m3-pressed) !important;
+  --panel-menuitem-border-radius: var(--md-sys-shape-corner-full) !important;
+  --panel-banner-item-background-color: var(--md-sys-color-primary-container) !important;
+  --panel-banner-item-color: var(--md-sys-color-on-primary-container) !important;
+  --panel-banner-item-hover-bgcolor: color-mix(in srgb, var(--md-sys-color-on-primary-container) 8%, var(--md-sys-color-primary-container)) !important;
+  --panel-banner-item-active-bgcolor: color-mix(in srgb, var(--md-sys-color-on-primary-container) 14%, var(--md-sys-color-primary-container)) !important;
+  --arrowpanel-background: var(--md-sys-color-surface-container-high) !important;
+  --arrowpanel-color: var(--md-sys-color-on-surface) !important;
+  --arrowpanel-border-color: transparent !important;
+  --arrowpanel-border-radius: var(--md-sys-shape-corner-large-increased) !important;
+
+  /* Buttons inside panels, dialogs and in-chrome UI (moz-button, etc.) */
+  --button-border-radius: var(--md-sys-shape-corner-full) !important;
+  --button-background-color: var(--md-sys-color-surface-container-highest) !important;
+  --button-background-color-hover: color-mix(in srgb, var(--md-sys-color-on-surface) 8%, var(--md-sys-color-surface-container-highest)) !important;
+  --button-background-color-active: color-mix(in srgb, var(--md-sys-color-on-surface) 14%, var(--md-sys-color-surface-container-highest)) !important;
+  --button-text-color: var(--md-sys-color-on-surface) !important;
+  --button-background-color-primary: var(--md-sys-color-primary) !important;
+  --button-background-color-primary-hover: var(--color-accent-primary-hover) !important;
+  --button-background-color-primary-active: var(--color-accent-primary-active) !important;
+  --button-text-color-primary: var(--md-sys-color-on-primary) !important;
+  --button-text-color-primary-hover: var(--md-sys-color-on-primary) !important;
+  --button-text-color-primary-active: var(--md-sys-color-on-primary) !important;
+  --button-background-color-ghost-hover: var(--m3-hover) !important;
+  --button-background-color-ghost-active: var(--m3-pressed) !important;
+  --button-border-color: transparent !important;
+  --button-border-color-primary: transparent !important;
+  --button-font-weight: 500 !important;
+
+  /* Text inputs (moz-input-text / moz-input-search) */
+  --input-text-background-color: var(--md-sys-color-surface-container-highest) !important;
+  --input-text-border: 2px solid transparent !important;
+  --input-text-border-radius: var(--md-sys-shape-corner-medium) !important;
+  --input-search-border-radius: var(--md-sys-shape-corner-full) !important;
+  --border-color-interactive: transparent !important;
+  --border-color-interactive-hover: var(--md-sys-color-outline) !important;
+  --border-color-interactive-active: var(--md-sys-color-primary) !important;
+
+  /* panel-list (sidebar and in-page menus) */
+  --panel-list-background-color: var(--md-sys-color-surface-container-high) !important;
+  --panel-list-text-color: var(--md-sys-color-on-surface) !important;
+  --panel-list-border-color: transparent !important;
+  --panel-list-border-radius: var(--md-sys-shape-corner-large-increased) !important;
+  --panel-item-button-border-radius: var(--md-sys-shape-corner-full) !important;
+  --panel-list-box-shadow: var(--m3-elev-2) !important;
+
+  /* Cards and box items (settings-like UI in sidebars and panels) */
+  --card-border-radius: var(--md-sys-shape-corner-large) !important;
+  --card-background-color: var(--md-sys-color-surface-container-low) !important;
+  --box-border-radius: var(--md-sys-shape-corner-large) !important;
+
+  /* Checkboxes, toggles, inputs in chrome */
+  --input-border-color: var(--md-sys-color-outline) !important;
+  --checkbox-checked-bgcolor: var(--md-sys-color-primary) !important;
+  --checkbox-checked-color: var(--md-sys-color-on-primary) !important;
+  --color-accent-attention: var(--md-sys-color-tertiary) !important;
+  --icon-color-success: var(--md-sys-color-primary) !important;
+
+  /* Sidebar */
+  --sidebar-background-color: var(--m3-frame) !important;
+  --sidebar-text-color: var(--md-sys-color-on-surface) !important;
+  --sidebar-border-color: transparent !important;
+  --sidebar-box-background: var(--m3-content-surface) !important;
+  --sidebar-box-color: var(--md-sys-color-on-surface) !important;
+  --sidebar-box-border-color: transparent !important;
+
+  /* Light-weight theme hooks, so third-party code reading them stays in sync */
+  --lwt-accent-color: var(--m3-frame) !important;
+  --lwt-text-color: var(--md-sys-color-on-surface) !important;
+  --lwt-selected-tab-background-color: var(--md-sys-color-secondary-container) !important;
+}
+
+/* Firefox re-declares panel tokens on popup elements themselves, so the
+   :root values above never reach them. Re-assert on the elements. */
+menupopup,
+panel,
+.panel-subview-body {
+  --panel-background-color: var(--md-sys-color-surface-container-high) !important;
+  --panel-text-color: var(--md-sys-color-on-surface) !important;
+  --panel-border-color: transparent !important;
+  --panel-border-radius: var(--md-sys-shape-corner-large-increased) !important;
+  --panel-box-shadow: var(--m3-elev-2) !important;
+  --panel-separator-color: var(--md-sys-color-outline-variant) !important;
+  --menuitem-border-radius: var(--md-sys-shape-corner-full) !important;
+  --background-color-canvas: var(--md-sys-color-surface-container-high) !important;
+  --text-color: var(--md-sys-color-on-surface) !important;
+}
+
+/* Inactive window: tone the frame down, as Android does for unfocused windows. */
+:root:-moz-window-inactive {
+  --m3-frame: var(--md-sys-color-surface-container-low);
+}
+
+/* Text selection in chrome inputs (urlbar, find bar, panels) */
+::selection {
+  background-color: color-mix(in srgb, var(--md-sys-color-primary) 35%, transparent);
+  color: inherit;
+}

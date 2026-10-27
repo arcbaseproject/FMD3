@@ -1,0 +1,6 @@
+# Used by the theme switcher to get colors as JSON. The empty template list
+# keeps matugen from writing any files.
+
+[config]
+
+[templates]

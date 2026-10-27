@@ -1,0 +1,305 @@
+/* ==========================================================================
+   Material You for Firefox: window frame
+   Toolbox, navigation toolbar, toolbar buttons, bookmarks bar, the floating
+   content card, find bar and notification bars.
+   ========================================================================== */
+
+/* -- Toolbox --------------------------------------------------------------- */
+
+#navigator-toolbox {
+  background: var(--m3-frame) !important;
+  color: var(--md-sys-color-on-surface) !important;
+  border-bottom: none !important;
+  transition: background-color var(--m3-dur-medium) var(--m3-ease-standard) !important;
+}
+
+#navigator-toolbox > toolbar,
+#nav-bar,
+#PersonalToolbar,
+#TabsToolbar {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+#nav-bar {
+  padding-block: 4px 6px !important;
+  padding-inline: var(--m3-toolbar-pad) !important;
+}
+
+/* Spacing between groups of buttons */
+#nav-bar-customization-target {
+  gap: 2px;
+}
+
+/* -- Toolbar buttons: 40px circular state layers ---------------------------- */
+
+:root {
+  --toolbarbutton-inner-padding: 9px !important;
+  --toolbarbutton-outer-padding: 2px !important;
+}
+
+toolbar .toolbarbutton-1 {
+  --toolbarbutton-icon-fill: var(--md-sys-color-on-surface-variant) !important;
+}
+
+/* Square targets use 50%, not the 999px "full" token: the press morph below
+   animates the radius with an overshooting curve, and overshooting down from
+   999px dips below zero, which flashes square corners. */
+toolbar .toolbarbutton-1 > :is(.toolbarbutton-icon, .toolbarbutton-badge-stack) {
+  border-radius: 50% !important;
+}
+
+toolbar .toolbarbutton-1 > .toolbarbutton-text {
+  border-radius: var(--md-sys-shape-corner-full) !important;
+}
+
+toolbar .toolbarbutton-1 > :is(.toolbarbutton-icon, .toolbarbutton-badge-stack, .toolbarbutton-text) {
+  transition:
+    background-color var(--m3-dur-short) var(--m3-ease-standard),
+    border-radius var(--m3-dur-medium) var(--m3-ease-spatial-fast),
+    scale var(--m3-dur-medium) var(--m3-ease-spatial-fast) !important;
+}
+
+/* Expressive press: the circle squishes toward a rounded square. */
+toolbar .toolbarbutton-1:not([disabled]):is(:hover:active, [open], [checked]) > :is(.toolbarbutton-icon, .toolbarbutton-badge-stack) {
+  border-radius: var(--md-sys-shape-corner-medium) !important;
+}
+
+toolbar .toolbarbutton-1:not([disabled]):hover:active > :is(.toolbarbutton-icon, .toolbarbutton-badge-stack) {
+  scale: 0.92;
+}
+
+/* Toggled / open buttons get the tonal secondary container. */
+toolbar .toolbarbutton-1:is([open], [checked]) > :is(.toolbarbutton-icon, .toolbarbutton-badge-stack) {
+  background-color: var(--md-sys-color-secondary-container) !important;
+  fill: var(--md-sys-color-on-secondary-container) !important;
+  color: var(--md-sys-color-on-secondary-container) !important;
+}
+
+toolbar .toolbarbutton-1:focus-visible > :is(.toolbarbutton-icon, .toolbarbutton-badge-stack, .toolbarbutton-text) {
+  outline: 2px solid var(--md-sys-color-primary) !important;
+  outline-offset: 1px !important;
+}
+
+/* Badges (downloads, updates, extensions) use the error or primary role. */
+.toolbarbutton-badge {
+  background-color: var(--md-sys-color-primary) !important;
+  color: var(--md-sys-color-on-primary) !important;
+  box-shadow: none !important;
+  border-radius: var(--md-sys-shape-corner-full) !important;
+  font-weight: 600 !important;
+}
+
+/* Download progress ring and attention dot follow the primary role. */
+#downloads-indicator-progress-inner,
+#downloads-indicator-progress-outer {
+  fill: var(--md-sys-color-primary) !important;
+}
+
+/* -- Bookmarks toolbar ---------------------------------------------------- */
+
+#PersonalToolbar {
+  padding-inline: calc(var(--m3-toolbar-pad) + 2px) !important;
+  padding-block: 0 6px !important;
+  font-family: var(--m3-font-plain) !important;
+}
+
+#PersonalToolbar toolbarbutton.bookmark-item,
+#PersonalToolbar #import-button {
+  margin-inline: 1px !important;
+  padding: 5px 12px !important;
+  border-radius: var(--md-sys-shape-corner-full) !important;
+  color: var(--md-sys-color-on-surface-variant) !important;
+  transition: background-color var(--m3-dur-short) var(--m3-ease-standard) !important;
+}
+
+#PersonalToolbar toolbarbutton.bookmark-item:hover {
+  background-color: var(--m3-hover) !important;
+  color: var(--md-sys-color-on-surface) !important;
+}
+
+#PersonalToolbar toolbarbutton.bookmark-item:is(:hover:active, [open]) {
+  background-color: var(--md-sys-color-secondary-container) !important;
+  color: var(--md-sys-color-on-secondary-container) !important;
+}
+
+#PersonalToolbar toolbarbutton.bookmark-item:focus-visible {
+  outline: 2px solid var(--md-sys-color-primary) !important;
+  outline-offset: -2px !important;
+}
+
+#PersonalToolbar .toolbarbutton-icon {
+  margin-inline-end: 6px !important;
+}
+
+#PersonalToolbar toolbarseparator {
+  border-color: var(--md-sys-color-outline-variant) !important;
+  margin-inline: 6px !important;
+}
+
+#personal-toolbar-empty-description {
+  color: var(--md-sys-color-on-surface-variant) !important;
+  padding-inline: 12px !important;
+}
+
+/* -- Floating content card -------------------------------------------------
+   The page sits in a rounded surface inset from the frame, like a Pixel app
+   window inside its container. Disable with m3.content.flat = true. */
+
+@media not -moz-pref("m3.content.flat") {
+  :root:not([inDOMFullscreen], [inFullscreen], [sizemode="fullscreen"]) {
+    #browser {
+      background: var(--m3-frame) !important;
+      transition: background-color var(--m3-dur-medium) var(--m3-ease-standard) !important;
+    }
+
+    #tabbrowser-tabbox {
+      margin: 0 var(--m3-content-inset) var(--m3-content-inset) !important;
+      border-radius: var(--md-sys-shape-corner-large) !important;
+      overflow: clip !important;
+      box-shadow: var(--m3-elev-1) !important;
+      background: var(--m3-content-surface) !important;
+    }
+
+    #tabbrowser-tabpanels,
+    .browserContainer,
+    .browserStack {
+      border-radius: inherit !important;
+      border: none !important;
+      background: transparent !important;
+    }
+
+    #tabbrowser-tabpanels > :not(.split-view-panel) .browserContainer {
+      border: none !important;
+      border-radius: var(--md-sys-shape-corner-large) !important;
+      overflow: clip !important;
+    }
+
+    /* Split view: each panel becomes its own card. */
+    #tabbrowser-tabpanels[splitview] {
+      background: var(--m3-frame) !important;
+      .split-view-panel .browserContainer {
+        border-radius: var(--md-sys-shape-corner-large) !important;
+        overflow: clip !important;
+        outline: none !important;
+      }
+    }
+  }
+
+  /* Sidebar open next to the card: keep the inset gap symmetric. */
+  #tabbrowser-tabbox:is([sidebar-shown], [sidebar-panel-open]):not([sidebar-positionend]) {
+    margin-inline-start: 0 !important;
+  }
+  #tabbrowser-tabbox[sidebar-positionend]:is([sidebar-shown], [sidebar-panel-open]) {
+    margin-inline-end: 0 !important;
+  }
+}
+
+/* Narrow windows: give the page every pixel. */
+@media (max-width: 700px) {
+  :root {
+    --m3-content-inset: 4px;
+    --m3-toolbar-pad: 4px;
+  }
+}
+
+/* -- Find bar -------------------------------------------------------------- */
+
+findbar {
+  background: var(--md-sys-color-surface-container) !important;
+  color: var(--md-sys-color-on-surface) !important;
+  border: none !important;
+  margin: 6px 8px 0 !important;
+  padding: 6px 10px !important;
+  border-radius: var(--md-sys-shape-corner-extra-large) !important;
+  box-shadow: none !important;
+}
+
+findbar .findbar-textbox {
+  background: var(--md-sys-color-surface-container-highest) !important;
+  color: var(--md-sys-color-on-surface) !important;
+  border: 2px solid transparent !important;
+  border-radius: var(--md-sys-shape-corner-full) !important;
+  padding: 6px 14px !important;
+  outline: none !important;
+  transition: border-color var(--m3-dur-short) var(--m3-ease-standard) !important;
+}
+
+findbar .findbar-textbox:focus {
+  border-color: var(--md-sys-color-primary) !important;
+  background: var(--md-sys-color-surface-container-lowest) !important;
+}
+
+findbar .findbar-textbox[status="notfound"] {
+  border-color: var(--md-sys-color-error) !important;
+  background: var(--md-sys-color-error-container) !important;
+  color: var(--md-sys-color-on-error-container) !important;
+}
+
+findbar :is(.findbar-find-previous, .findbar-find-next, .findbar-closebutton) {
+  border-radius: var(--md-sys-shape-corner-full) !important;
+  border: none !important;
+  background: transparent !important;
+  margin-inline: 2px !important;
+}
+
+findbar :is(.findbar-find-previous, .findbar-find-next, .findbar-closebutton):hover {
+  background: var(--m3-hover) !important;
+}
+
+findbar checkbox,
+findbar .findbar-label {
+  color: var(--md-sys-color-on-surface-variant) !important;
+}
+
+/* -- Notification bars (inside the content card and above it) ------------- */
+
+notification-message,
+.notificationbox-stack notification-message {
+  --message-bar-background-color: var(--md-sys-color-secondary-container) !important;
+  --message-bar-text-color: var(--md-sys-color-on-secondary-container) !important;
+  --message-bar-border-color: transparent !important;
+  --message-bar-border-radius: var(--md-sys-shape-corner-large) !important;
+  border-radius: var(--md-sys-shape-corner-large) !important;
+  margin: 6px 8px !important;
+}
+
+notification-message[type="warning"] {
+  --message-bar-background-color: var(--md-sys-color-tertiary-container) !important;
+  --message-bar-text-color: var(--md-sys-color-on-tertiary-container) !important;
+}
+
+notification-message:is([type="critical"], [type="error"]) {
+  --message-bar-background-color: var(--md-sys-color-error-container) !important;
+  --message-bar-text-color: var(--md-sys-color-on-error-container) !important;
+}
+
+/* -- Tooltips ----------------------------------------------------------------
+   M3 plain tooltip: inverse surface, small radius. */
+
+tooltip:not(.tab-preview-panel, #tab-preview-panel) {
+  appearance: none !important;
+  --panel-background-color: var(--md-sys-color-inverse-surface) !important;
+  --panel-text-color: var(--md-sys-color-inverse-on-surface) !important;
+  --panel-border-radius: var(--md-sys-shape-corner-small) !important;
+  --panel-border-color: transparent !important;
+  background-color: var(--md-sys-color-inverse-surface) !important;
+  color: var(--md-sys-color-inverse-on-surface) !important;
+  border: none !important;
+  border-radius: var(--md-sys-shape-corner-small) !important;
+  padding: 6px 10px !important;
+  font-size: 0.92em !important;
+}
+
+/* -- Scrollbars in chrome --------------------------------------------------- */
+
+:root {
+  scrollbar-color: var(--md-sys-color-outline-variant) transparent;
+}
+
+/* -- Theme switcher toolbar button (added by m3/switcher/boot.js) ---------- */
+
+#m3-theme-button {
+  list-style-image: url("chrome://m3theme/content/palette.svg");
+}

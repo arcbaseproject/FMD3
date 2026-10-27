@@ -1,0 +1,130 @@
+/* ==========================================================================
+   Material You for Firefox: sidebar
+   The launcher strip is a navigation rail on the frame color. Open panels
+   (bookmarks, history, extensions) float as rounded cards that match the
+   content card next to them. Launcher buttons are moz-buttons inside a
+   shadow root, so they pick up the --button-* tokens from bridge.css.
+   ========================================================================== */
+
+sidebar-main {
+  background: var(--m3-frame) !important;
+  --button-size-icon: 40px;
+  --button-border-radius: var(--md-sys-shape-corner-full) !important;
+  --button-background-color-ghost-selected: var(--md-sys-color-secondary-container) !important;
+  --button-text-color-ghost-selected: var(--md-sys-color-on-secondary-container) !important;
+  --button-background-color-selected: var(--md-sys-color-secondary-container) !important;
+  --button-text-color-selected: var(--md-sys-color-on-secondary-container) !important;
+}
+
+#sidebar-box {
+  background: var(--m3-frame) !important;
+  border: none !important;
+  padding: 0 var(--m3-content-inset) var(--m3-content-inset) !important;
+}
+
+/* The panel itself: rounded card on the surface role */
+#sidebar-box > .sidebar-browser-stack,
+#sidebar-box > #sidebar {
+  border-radius: var(--md-sys-shape-corner-large) !important;
+  overflow: clip !important;
+  background: var(--md-sys-color-surface-container-low) !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+#sidebar {
+  background: var(--md-sys-color-surface-container-low) !important;
+  border-radius: var(--md-sys-shape-corner-large) !important;
+}
+
+/* Legacy header (sidebar.revamp = false) */
+#sidebar-header {
+  border: none !important;
+  padding: 10px 12px !important;
+  font-family: var(--m3-font-brand) !important;
+  font-size: 1.1em !important;
+  font-weight: 600;
+}
+
+#sidebar-switcher-target,
+#sidebar-close {
+  border-radius: var(--md-sys-shape-corner-full) !important;
+  padding: 6px 10px !important;
+}
+
+#sidebar-switcher-target:hover,
+#sidebar-close:hover {
+  background-color: var(--m3-hover) !important;
+}
+
+#sidebar-switcher-target:is(:hover:active, [open]) {
+  background-color: var(--md-sys-color-secondary-container) !important;
+}
+
+/* Splitter: invisible, wide hit area, tinted on hover */
+#sidebar-splitter,
+#sidebar-launcher-splitter {
+  border: none !important;
+  background: transparent !important;
+  width: 6px !important;
+  min-width: 6px !important;
+  margin-inline: -3px !important;
+  position: relative;
+  z-index: 3;
+  transition: background-color var(--m3-dur-short) var(--m3-ease-standard) !important;
+}
+
+#sidebar-splitter:hover,
+#sidebar-launcher-splitter:hover {
+  background: linear-gradient(to right, transparent 2px, var(--md-sys-color-primary) 2px 4px, transparent 4px) !important;
+}
+
+/* -- Inside the places sidebars (bookmarks, history) ----------------------
+   These are chrome documents, so userChrome.css applies to them too. */
+
+#sidebar-search-container {
+  padding: 8px 10px !important;
+}
+
+/* Search fields are moz-input-search elements; their tokens are in
+   bridge.css. Only the legacy XUL search-textbox needs direct styling. */
+#sidebar-search-container > search-textbox {
+  border-radius: var(--md-sys-shape-corner-full) !important;
+  background-color: var(--md-sys-color-surface-container-highest) !important;
+  border: 2px solid transparent !important;
+  color: var(--md-sys-color-on-surface) !important;
+  padding: 6px 12px !important;
+  outline: none !important;
+}
+
+#sidebar-search-container > search-textbox[focused] {
+  border-color: var(--md-sys-color-primary) !important;
+}
+
+.sidebar-placesTree,
+#bookmarks-view,
+#historyTree {
+  background: transparent !important;
+  color: var(--md-sys-color-on-surface) !important;
+  border: none !important;
+  appearance: none !important;
+  padding-inline: 6px !important;
+}
+
+/* Tree rows can only take a background color, not a radius. */
+.sidebar-placesTreechildren::-moz-tree-row(hover) {
+  background-color: var(--m3-hover) !important;
+}
+
+.sidebar-placesTreechildren::-moz-tree-row(selected) {
+  background-color: var(--md-sys-color-secondary-container) !important;
+}
+
+.sidebar-placesTreechildren::-moz-tree-cell-text(selected) {
+  color: var(--md-sys-color-on-secondary-container) !important;
+}
+
+.sidebar-placesTreechildren::-moz-tree-row {
+  min-height: 32px !important;
+}

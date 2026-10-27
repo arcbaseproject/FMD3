@@ -1,0 +1,16 @@
+/* ==========================================================================
+   Material You for Firefox (userContent.css)
+   Styles Firefox's own pages only: new tab, home, private window, Settings,
+   Add-ons, Downloads and the other about: pages listed in m3/pages.css.
+   Every rule lives inside @-moz-document, so websites are never restyled.
+
+   Load order: static palette, then the matugen palette (optional), then
+   the page styles.
+   ========================================================================== */
+
+@import url("m3/pages.palette.static.css");
+@import url("m3/pages.palette.generated.css");
+@import url("m3/pages.css");
+@import url("m3/newtab.css");
+
+/* Your own overrides go below this line. ------------------------------------ */

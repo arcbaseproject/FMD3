@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+  <!-- Turns a colored logo into a white glyph. Alpha becomes
+       2.2 * (alpha - luminance): dark and colored marks turn opaque, white
+       backing shapes (the disc behind a logo) turn transparent. RGB is
+       forced to white; CSS darkens it for light mode. -->
+  <filter id="mono" color-interpolation-filters="sRGB">
+    <feColorMatrix type="matrix" values="0 0 0 0 1
+                                         0 0 0 0 1
+                                         0 0 0 0 1
+                                         -0.4677 -1.5734 -0.1588 2.2 0"/>
+  </filter>
+</svg>

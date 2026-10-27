@@ -1,0 +1,320 @@
+/* ==========================================================================
+   Material You for Firefox: downloads, extensions and site panels
+   ========================================================================== */
+
+/* -- Downloads panel: each download is a card ------------------------------ */
+
+#downloadsPanel {
+  --downloads-item-height: 64px !important;
+}
+
+#downloadsListBox {
+  background: transparent !important;
+  padding: 8px !important;
+  border: none !important;
+}
+
+#downloadsListBox > richlistitem {
+  border-radius: var(--md-sys-shape-corner-large) !important;
+  background-color: var(--md-sys-color-surface-container-low) !important;
+  margin-block: 0 6px !important;
+  padding: 8px 6px 8px 12px !important;
+  border: none !important;
+  outline: none !important;
+  transition: background-color var(--m3-dur-short) var(--m3-ease-standard),
+              border-radius var(--m3-dur-medium) var(--m3-ease-spatial-fast) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  #downloadsListBox > richlistitem {
+    background-color: var(--md-sys-color-surface-container-highest) !important;
+  }
+}
+
+#downloadsListBox > richlistitem:last-child {
+  margin-block-end: 0 !important;
+}
+
+#downloadsListBox > richlistitem:hover {
+  background-color: color-mix(in srgb, var(--md-sys-color-on-surface) 6%, var(--md-sys-color-surface-container-low)) !important;
+}
+
+#downloadsListBox > richlistitem[selected],
+#downloadsListBox:focus-visible > richlistitem[selected] {
+  background-color: var(--md-sys-color-secondary-container) !important;
+  color: var(--md-sys-color-on-secondary-container) !important;
+  outline: none !important;
+}
+
+#downloadsListBox:focus-visible > richlistitem[selected] {
+  outline: 2px solid var(--md-sys-color-primary) !important;
+  outline-offset: -2px !important;
+}
+
+/* Finished downloads get a tonal check on their icon area */
+#downloadsListBox > richlistitem .downloadTypeIcon {
+  border-radius: var(--md-sys-shape-corner-medium) !important;
+}
+
+#downloadsListBox > richlistitem {
+  color: var(--md-sys-color-on-surface) !important;
+}
+
+#downloadsListBox .downloadTarget {
+  font-weight: 500 !important;
+  color: inherit !important;
+  opacity: 1 !important;
+}
+
+#downloadsListBox .downloadDetails {
+  color: var(--md-sys-color-on-surface-variant) !important;
+  opacity: 1 !important;
+}
+
+#downloadsListBox > richlistitem[state="1"] .downloadDetails {
+  color: var(--md-sys-color-primary) !important;
+}
+
+/* Download action button (open folder, retry, cancel): circular icon button */
+#downloadsListBox .downloadButton,
+#downloadsPanel .downloadButton {
+  border-radius: var(--md-sys-shape-corner-full) !important;
+  min-width: 40px !important;
+  height: 40px !important;
+  margin: 0 !important;
+  background: transparent !important;
+  border: none !important;
+}
+
+#downloadsPanel .downloadButton > .button-box,
+#downloadsListBox .downloadButton > .button-box {
+  border-radius: var(--md-sys-shape-corner-full) !important;
+  border: none !important;
+  padding: 8px !important;
+}
+
+#downloadsPanel .downloadButton:hover > .button-box,
+#downloadsListBox .downloadButton:hover > .button-box {
+  background-color: var(--m3-hover) !important;
+}
+
+#downloadsPanel .downloadButton:hover:active > .button-box {
+  background-color: var(--m3-pressed) !important;
+}
+
+/* M3 linear progress indicator: rounded track, gap, primary indicator. */
+.downloadProgress {
+  appearance: none !important;
+  height: 4px !important;
+  margin-block: 6px 4px !important;
+  border: none !important;
+  border-radius: var(--md-sys-shape-corner-full) !important;
+  background: var(--md-sys-color-secondary-container) !important;
+  overflow: clip !important;
+}
+
+#downloadsListBox > richlistitem[selected] .downloadProgress {
+  background: color-mix(in srgb, var(--md-sys-color-on-secondary-container) 20%, transparent) !important;
+}
+
+.downloadProgress::-moz-progress-bar {
+  background: var(--md-sys-color-primary) !important;
+  border-radius: var(--md-sys-shape-corner-full) !important;
+  transition: width var(--m3-dur-long) var(--m3-ease-emphasized) !important;
+}
+
+.downloadProgress[paused]::-moz-progress-bar {
+  background: var(--md-sys-color-outline) !important;
+}
+
+.downloadProgress:indeterminate::-moz-progress-bar {
+  background: linear-gradient(90deg, transparent 0 20%, var(--md-sys-color-primary) 20% 55%, transparent 55%) !important;
+  background-size: 200% 100% !important;
+}
+
+/* Blocked / malware downloads use error containers. */
+#downloadsListBox > richlistitem:is([verdict="Malware"], [verdict="Uncommon"], [verdict="Insecure"], [verdict="DownloadSpam"]) {
+  background-color: var(--md-sys-color-error-container) !important;
+  color: var(--md-sys-color-on-error-container) !important;
+}
+
+/* Summary and footer */
+#downloadsSummary {
+  border-radius: var(--md-sys-shape-corner-large) !important;
+  margin: 0 8px 8px !important;
+  background-color: var(--md-sys-color-surface-container-low) !important;
+}
+
+#downloadsFooterButtons {
+  padding: 0 0 8px !important;
+}
+
+#downloadsHistory {
+  font-weight: 500 !important;
+  color: var(--md-sys-color-primary) !important;
+}
+
+#emptyDownloads {
+  color: var(--md-sys-color-on-surface-variant) !important;
+  padding: 24px !important;
+}
+
+/* -- Extensions panel ------------------------------------------------------ */
+
+#unified-extensions-panel {
+  --uei-icon-size: 28px !important;
+}
+
+.unified-extensions-list {
+  padding-inline: 8px !important;
+}
+
+.unified-extensions-item {
+  border-radius: var(--md-sys-shape-corner-large) !important;
+  margin-block: 2px !important;
+  transition: background-color var(--m3-dur-short) var(--m3-ease-standard) !important;
+}
+
+.unified-extensions-item > .unified-extensions-item-row-wrapper > .subviewbutton,
+.unified-extensions-item-action-button.subviewbutton {
+  margin-inline: 0 !important;
+  border-radius: var(--md-sys-shape-corner-large) !important;
+  min-height: 52px;
+}
+
+.unified-extensions-item:hover > .unified-extensions-item-row-wrapper > .unified-extensions-item-action-button {
+  background-color: var(--m3-hover) !important;
+  color: var(--md-sys-color-on-surface) !important;
+}
+
+.unified-extensions-item:hover > .unified-extensions-item-row-wrapper > .unified-extensions-item-action-button:hover {
+  background-color: var(--md-sys-color-secondary-container) !important;
+  color: var(--md-sys-color-on-secondary-container) !important;
+}
+
+/* Extension icons sit in rounded squircle tiles, like launcher icons. */
+.unified-extensions-item .webextension-browser-action.subviewbutton > .toolbarbutton-badge-stack {
+  background-color: var(--md-sys-color-surface-container-highest) !important;
+  border-radius: var(--md-sys-shape-corner-medium) !important;
+  padding: 6px !important;
+}
+
+.unified-extensions-item-name {
+  font-weight: 500 !important;
+}
+
+.unified-extensions-item-message {
+  color: var(--md-sys-color-on-surface-variant) !important;
+}
+
+.unified-extensions-item-menu-button.subviewbutton {
+  border-radius: var(--md-sys-shape-corner-full) !important;
+  margin-inline: 4px 0 !important;
+  padding: 8px !important;
+  min-height: 36px;
+  min-width: 36px;
+}
+
+.unified-extensions-item[attention] > .unified-extensions-item-row-wrapper > .unified-extensions-item-action-button.subviewbutton {
+  background-image: radial-gradient(circle, var(--md-sys-color-primary), var(--md-sys-color-primary) 3px, transparent 3px) !important;
+}
+
+#unified-extensions-manage-extensions {
+  font-weight: 500 !important;
+}
+
+/* -- Site information / permissions / protections panels ------------------ */
+
+/* Width stays Firefox's own: these panels lay their content out at a fixed
+   --controlcenter-popup-content-width, so a narrower panel clips it. */
+
+/* Trust panel (shield button): the status card uses tonal containers
+   instead of Firefox's violet / red / grey fills. */
+:root,
+#trustpanel-popup {
+  --trustpanel-highlight-bg: var(--md-sys-color-primary-container) !important;
+  --trustpanel-warning-bg: var(--md-sys-color-error-container) !important;
+  --trustpanel-graphic-bg: var(--md-sys-color-surface-container-highest) !important;
+  --trustpanel-inner-border: none !important;
+  --trustpanel-inner-warning-border: none !important;
+  --trustpanel-card-border-color: transparent !important;
+  --trustpanel-card-divider-color: var(--md-sys-color-outline-variant) !important;
+}
+
+#trustpanel-graphic-section {
+  border: none !important;
+  border-radius: var(--md-sys-shape-corner-large-increased) !important;
+}
+
+#trustpanel-popup[tracking-protection="enabled"] #trustpanel-graphic-section {
+  color: var(--md-sys-color-on-primary-container) !important;
+}
+
+#trustpanel-popup[tracking-protection="warning"] #trustpanel-graphic-section {
+  color: var(--md-sys-color-on-error-container) !important;
+}
+
+#trustpanel-popup[tracking-protection="disabled"] #trustpanel-graphic-section {
+  color: var(--md-sys-color-on-surface) !important;
+}
+
+#trustpanel-graphic-section :is(label, description) {
+  color: inherit !important;
+}
+
+#protections-popup-mainView-panel-header,
+#identity-popup-mainView-panel-header,
+#trustpanel-popup .panel-header {
+  border-radius: var(--md-sys-shape-corner-large) !important;
+  margin: 8px 8px 0 !important;
+}
+
+#protections-popup[hasException] #protections-popup-mainView-panel-header {
+  background: var(--md-sys-color-tertiary-container) !important;
+  color: var(--md-sys-color-on-tertiary-container) !important;
+}
+
+.protections-popup-switch,
+moz-toggle {
+  --toggle-background-color-pressed: var(--md-sys-color-primary) !important;
+  --toggle-dot-background-color-on-pressed: var(--md-sys-color-on-primary) !important;
+  --toggle-background-color: var(--md-sys-color-surface-container-highest) !important;
+  --toggle-border-color: var(--md-sys-color-outline) !important;
+  --toggle-dot-background-color: var(--md-sys-color-outline) !important;
+  --toggle-height: 28px !important;
+  --toggle-width: 48px !important;
+  --toggle-dot-height: 18px !important;
+  --toggle-dot-width: 18px !important;
+}
+
+.identity-popup-security-connection,
+.protections-popup-category {
+  border-radius: var(--md-sys-shape-corner-full) !important;
+}
+
+/* -- Customize mode -------------------------------------------------------- */
+
+#customization-container {
+  background: var(--m3-frame) !important;
+  color: var(--md-sys-color-on-surface) !important;
+}
+
+#customization-palette .toolbarbutton-1,
+#customization-palette toolbarpaletteitem {
+  border-radius: var(--md-sys-shape-corner-large) !important;
+}
+
+#customization-footer button,
+.customizationmode-button {
+  border-radius: var(--md-sys-shape-corner-full) !important;
+  appearance: none !important;
+  border: none !important;
+  background-color: var(--md-sys-color-surface-container-highest) !important;
+  color: var(--md-sys-color-on-surface) !important;
+  padding: 8px 16px !important;
+}
+
+#customization-done-button {
+  background-color: var(--md-sys-color-primary) !important;
+  color: var(--md-sys-color-on-primary) !important;
+}

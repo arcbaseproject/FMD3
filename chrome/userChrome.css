@@ -1,0 +1,26 @@
+/* ==========================================================================
+   Material You for Firefox (userChrome.css)
+   Material Design 3 theme for the browser UI. Target: Firefox 158+, Linux.
+
+   Load order matters:
+     1. tokens.css             static M3 palette, shape, motion, elevation
+     2. palette.generated.css  matugen wallpaper palette (optional; overrides 1)
+     3. bridge.css             maps M3 roles onto Firefox's own tokens
+     4. component files
+
+   Customize colors in m3/tokens.css or regenerate palette.generated.css.
+   Prefs (about:config, boolean, all optional):
+     m3.content.flat   true = page fills the window, no floating card
+   ========================================================================== */
+
+@import url("m3/tokens.css");
+@import url("m3/palette.generated.css");
+@import url("m3/bridge.css");
+@import url("m3/frame.css");
+@import url("m3/tabs.css");
+@import url("m3/omnibox.css");
+@import url("m3/menus.css");
+@import url("m3/panels.css");
+@import url("m3/sidebar.css");
+
+/* Your own overrides go below this line. ------------------------------------ */

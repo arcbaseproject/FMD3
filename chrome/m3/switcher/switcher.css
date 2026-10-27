@@ -1,0 +1,577 @@
+/* Material You theme switcher page. Colors come only from the
+   --md-sys-color-* roles, so the page recolors live with the browser. */
+
+:root {
+  --font: "Google Sans Flex", "Google Sans", "Google Sans Text", "Roboto Flex", "Roboto", "Inter", system-ui, sans-serif;
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+  --ease-spatial: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --hover: color-mix(in srgb, var(--md-sys-color-on-surface) 8%, transparent);
+  --pressed: color-mix(in srgb, var(--md-sys-color-on-surface) 12%, transparent);
+  color-scheme: light dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
+  font: 14px/1.45 var(--font);
+  transition: background-color 300ms var(--ease), color 300ms var(--ease);
+}
+
+.page {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 40px 24px 96px;
+  display: grid;
+  gap: 16px;
+}
+
+h1 {
+  font-size: 44px;
+  line-height: 1.1;
+  font-weight: 500;
+  letter-spacing: -0.5px;
+  margin: 0 0 8px;
+}
+
+h2 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 14px;
+  color: var(--md-sys-color-on-surface);
+}
+
+.hint {
+  margin: 10px 0 0;
+  color: var(--md-sys-color-on-surface-variant);
+  font-size: 13px;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 2px solid var(--md-sys-color-primary);
+  outline-offset: 2px;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+/* -- Hero and mock browser ------------------------------------------------ */
+
+.hero {
+  display: grid;
+  grid-template-columns: 1fr minmax(240px, 340px);
+  gap: 24px;
+  align-items: center;
+  padding: 8px 4px 16px;
+}
+
+.hero p {
+  margin: 0;
+  color: var(--md-sys-color-on-surface-variant);
+  font-size: 16px;
+}
+
+.mock {
+  border-radius: 28px;
+  background: var(--md-sys-color-surface-container);
+  padding: 10px 10px 12px;
+  display: grid;
+  gap: 8px;
+  box-shadow: 0 1px 3px color-mix(in srgb, var(--md-sys-color-shadow) 18%, transparent);
+}
+
+.mock * {
+  transition: background-color 300ms var(--ease);
+}
+
+.mock-tabs,
+.mock-bar {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.mock-tab {
+  height: 18px;
+  width: 64px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--md-sys-color-on-surface) 8%, transparent);
+}
+
+.mock-tab-active {
+  background: var(--md-sys-color-secondary-container);
+}
+
+.mock-btn {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--md-sys-color-on-surface-variant) 30%, transparent);
+}
+
+.mock-url {
+  flex: 1;
+  height: 24px;
+  border-radius: 999px;
+  background: var(--md-sys-color-surface-container-highest);
+}
+
+.mock-page {
+  position: relative;
+  height: 128px;
+  border-radius: 16px;
+  background: var(--md-sys-color-surface);
+  padding: 16px;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+}
+
+.mock-line {
+  height: 10px;
+  width: 50%;
+  border-radius: 999px;
+  background: var(--md-sys-color-surface-container-high);
+}
+
+.mock-line-wide {
+  width: 75%;
+  background: var(--md-sys-color-on-surface);
+  opacity: 0.8;
+}
+
+.mock-chip {
+  margin-top: 6px;
+  height: 24px;
+  width: 92px;
+  border-radius: 999px;
+  background: var(--md-sys-color-primary);
+}
+
+.mock-fab {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: var(--md-sys-color-tertiary-container);
+}
+
+/* -- Cards -------------------------------------------------------------------- */
+
+.card {
+  background: var(--md-sys-color-surface-container-low);
+  border-radius: 28px;
+  padding: 20px 24px 24px;
+  transition: background-color 300ms var(--ease);
+}
+
+/* -- Segmented button (M3) --------------------------------------------------- */
+
+.segmented {
+  display: flex;
+  border-radius: 999px;
+  border: 1px solid var(--md-sys-color-outline);
+  overflow: clip;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.segmented > button {
+  appearance: none;
+  border: none;
+  border-inline-start: 1px solid var(--md-sys-color-outline);
+  background: transparent;
+  min-height: 40px;
+  padding: 0 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  color: var(--md-sys-color-on-surface);
+  transition: background-color 150ms var(--ease);
+}
+
+.segmented > button:first-child {
+  border-inline-start: none;
+}
+
+.segmented > button:hover {
+  background: var(--hover);
+}
+
+.segmented > button[aria-checked="true"] {
+  background: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-on-secondary-container);
+}
+
+.segmented > button[aria-checked="true"]::before {
+  content: "";
+  width: 18px;
+  height: 18px;
+  background: currentColor;
+  mask: url("chrome://global/skin/icons/check.svg") center / 16px no-repeat;
+}
+
+.segmented > button:focus-visible {
+  outline-offset: -3px;
+}
+
+/* -- Color swatches (Android wallpaper & style picker) ---------------------- */
+
+.swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(56px, 1fr));
+  gap: 14px;
+  max-width: 600px;
+}
+
+.swatch {
+  position: relative;
+  appearance: none;
+  border: none;
+  padding: 0;
+  aspect-ratio: 1;
+  width: 100%;
+  max-width: 64px;
+  border-radius: 50%;
+  background: conic-gradient(var(--b) 0 25%, var(--c) 25% 50%, var(--a) 50% 100%);
+  transition: border-radius 350ms var(--ease-spatial), scale 350ms var(--ease-spatial);
+}
+
+.swatch:hover {
+  scale: 1.06;
+}
+
+.swatch:active {
+  scale: 0.94;
+}
+
+.swatch[aria-checked="true"] {
+  border-radius: 18px;
+  box-shadow: 0 0 0 3px var(--md-sys-color-surface-container-low), 0 0 0 5px var(--md-sys-color-primary);
+}
+
+.swatch-check {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--md-sys-color-primary-container);
+  opacity: 0;
+  scale: 0.5;
+  transition: opacity 200ms var(--ease), scale 350ms var(--ease-spatial);
+}
+
+.swatch-check::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--md-sys-color-on-primary-container);
+  mask: url("chrome://global/skin/icons/check.svg") center / 14px no-repeat;
+}
+
+.swatch[aria-checked="true"] .swatch-check {
+  opacity: 1;
+  scale: 1;
+}
+
+/* -- Custom color row ----------------------------------------------------------- */
+
+.custom-row {
+  margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+}
+
+.custom-row .hint {
+  margin: 0;
+  flex: 1 1 220px;
+}
+
+.color-well {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: conic-gradient(red, yellow, lime, cyan, blue, magenta, red);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: border-radius 350ms var(--ease-spatial);
+}
+
+.color-well:hover {
+  border-radius: 28px;
+}
+
+.color-well input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.color-well:focus-within {
+  outline: 2px solid var(--md-sys-color-primary);
+  outline-offset: 2px;
+}
+
+.color-well-dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--md-sys-color-surface);
+  border: 4px solid var(--md-sys-color-surface-container-low);
+}
+
+.field {
+  display: grid;
+  border-radius: 12px 12px 4px 4px;
+  background: var(--md-sys-color-surface-container-highest);
+  border-bottom: 2px solid var(--md-sys-color-on-surface-variant);
+  padding: 6px 14px 4px;
+  min-width: 140px;
+}
+
+.field:focus-within {
+  border-bottom-color: var(--md-sys-color-primary);
+}
+
+.field.invalid {
+  border-bottom-color: var(--md-sys-color-error);
+}
+
+.field-label {
+  font-size: 12px;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.field:focus-within .field-label {
+  color: var(--md-sys-color-primary);
+}
+
+.field input {
+  appearance: none;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--md-sys-color-on-surface);
+  font: 500 16px/1.4 ui-monospace, "JetBrainsMono Nerd Font", monospace;
+  padding: 0;
+  width: 100%;
+}
+
+/* -- Filter chips ---------------------------------------------------------- */
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 0 16px;
+  border-radius: 10px;
+  border: 1px solid var(--md-sys-color-outline-variant);
+  background: transparent;
+  color: var(--md-sys-color-on-surface-variant);
+  font-weight: 500;
+  transition: background-color 150ms var(--ease), border-radius 300ms var(--ease-spatial), padding 200ms var(--ease);
+}
+
+.chip:hover {
+  background: var(--hover);
+}
+
+.chip[aria-checked="true"] {
+  border-color: transparent;
+  border-radius: 17px;
+  padding-inline-start: 10px;
+  background: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-on-secondary-container);
+}
+
+.chip-check {
+  display: none;
+  width: 18px;
+  height: 18px;
+  background: currentColor;
+  mask: url("chrome://global/skin/icons/check.svg") center / 16px no-repeat;
+}
+
+.chip[aria-checked="true"] .chip-check {
+  display: block;
+}
+
+/* -- Switch (M3) ------------------------------------------------------------- */
+
+.switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  cursor: pointer;
+}
+
+.row-title {
+  display: block;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.row-sub {
+  display: block;
+  font-size: 13px;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.switch {
+  appearance: none;
+  flex: none;
+  position: relative;
+  width: 52px;
+  height: 32px;
+  margin: 0;
+  border-radius: 999px;
+  border: 2px solid var(--md-sys-color-outline);
+  background: var(--md-sys-color-surface-container-highest);
+  cursor: pointer;
+  transition: background-color 200ms var(--ease), border-color 200ms var(--ease);
+}
+
+.switch::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 6px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--md-sys-color-outline);
+  translate: 0 -50%;
+  transition: left 300ms var(--ease-spatial), width 200ms var(--ease), height 200ms var(--ease), background-color 200ms var(--ease);
+}
+
+.switch:checked {
+  background: var(--md-sys-color-primary);
+  border-color: var(--md-sys-color-primary);
+}
+
+.switch:checked::before {
+  left: 22px;
+  width: 24px;
+  height: 24px;
+  background: var(--md-sys-color-on-primary);
+}
+
+/* -- Role grid --------------------------------------------------------------- */
+
+.roles {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 6px;
+}
+
+.role {
+  appearance: none;
+  border: none;
+  background: transparent;
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 10px;
+  align-items: center;
+  text-align: start;
+  padding: 6px 10px 6px 6px;
+  border-radius: 16px;
+  transition: background-color 150ms var(--ease);
+}
+
+.role:hover {
+  background: var(--hover);
+}
+
+.role-dot {
+  grid-row: span 2;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--swatch);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--md-sys-color-on-surface) 14%, transparent);
+}
+
+.role-name {
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.role-hex {
+  font: 12px ui-monospace, monospace;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+/* -- Snackbar and busy state ------------------------------------------------ */
+
+.snackbar {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  translate: -50% 0;
+  max-width: min(560px, calc(100vw - 32px));
+  padding: 14px 18px;
+  border-radius: 8px;
+  background: var(--md-sys-color-inverse-surface);
+  color: var(--md-sys-color-inverse-on-surface);
+  box-shadow: 0 3px 8px color-mix(in srgb, var(--md-sys-color-shadow) 25%, transparent);
+}
+
+body.busy .card {
+  cursor: progress;
+}
+
+/* -- Narrow windows ------------------------------------------------------------ */
+
+@media (max-width: 680px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
+  h1 {
+    font-size: 36px;
+  }
+  .card {
+    padding: 18px 16px 20px;
+  }
+  .segmented > button {
+    padding: 0 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition-duration: 1ms !important;
+  }
+}

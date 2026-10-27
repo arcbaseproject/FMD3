@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="color-scheme" content="light dark">
+  <title>Theme</title>
+  <link rel="icon" href="chrome://m3theme/content/palette.svg">
+  <!-- Same palette files as userChrome.css: static roles, then matugen's.
+       In Wallpaper and Custom mode the live sheet overrides both. -->
+  <link rel="stylesheet" href="chrome://m3palette/content/tokens.css">
+  <link rel="stylesheet" href="chrome://m3palette/content/palette.generated.css">
+  <link rel="stylesheet" href="chrome://m3theme/content/switcher.css">
+  <script type="module" src="chrome://m3theme/content/switcher.mjs"></script>
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <div class="hero-text">
+        <h1>Theme</h1>
+        <p>Pick where Firefox gets its colors. Changes apply instantly.</p>
+      </div>
+      <div class="mock" aria-hidden="true">
+        <div class="mock-tabs">
+          <span class="mock-tab mock-tab-active"></span>
+          <span class="mock-tab"></span>
+          <span class="mock-tab"></span>
+        </div>
+        <div class="mock-bar">
+          <span class="mock-btn"></span>
+          <span class="mock-url"></span>
+          <span class="mock-btn"></span>
+        </div>
+        <div class="mock-page">
+          <span class="mock-line mock-line-wide"></span>
+          <span class="mock-line"></span>
+          <span class="mock-chip"></span>
+          <span class="mock-fab"></span>
+        </div>
+      </div>
+    </header>
+
+    <section class="card" aria-labelledby="source-title">
+      <h2 id="source-title">Color source</h2>
+      <div class="segmented" role="radiogroup" aria-labelledby="source-title" id="source">
+        <button type="button" role="radio" data-value="files">
+          <span class="seg-label">Desktop</span>
+        </button>
+        <button type="button" role="radio" data-value="wallpaper">
+          <span class="seg-label">Wallpaper</span>
+        </button>
+        <button type="button" role="radio" data-value="color">
+          <span class="seg-label">Custom color</span>
+        </button>
+      </div>
+      <p class="hint" id="source-hint"></p>
+    </section>
+
+    <section class="card" id="color-section" aria-labelledby="color-title">
+      <h2 id="color-title">Color</h2>
+      <div class="swatches" id="swatches" role="radiogroup" aria-labelledby="color-title"></div>
+      <div class="custom-row">
+        <label class="color-well" title="Pick any color">
+          <input type="color" id="picker" aria-label="Custom seed color">
+          <span class="color-well-dot"></span>
+        </label>
+        <label class="field">
+          <span class="field-label">Hex</span>
+          <input type="text" id="hex" spellcheck="false" maxlength="7" autocomplete="off" aria-label="Seed color as hex">
+        </label>
+        <p class="hint">The full palette is derived from this one seed, like Android does from your wallpaper.</p>
+      </div>
+    </section>
+
+    <section class="card" id="style-section" aria-labelledby="style-title">
+      <h2 id="style-title">Style</h2>
+      <div class="chips" id="schemes" role="radiogroup" aria-labelledby="style-title"></div>
+    </section>
+
+    <section class="card" id="contrast-section" aria-labelledby="contrast-title">
+      <h2 id="contrast-title">Contrast</h2>
+      <div class="segmented" role="radiogroup" aria-labelledby="contrast-title" id="contrast">
+        <button type="button" role="radio" data-value="0"><span class="seg-label">Standard</span></button>
+        <button type="button" role="radio" data-value="0.5"><span class="seg-label">Medium</span></button>
+        <button type="button" role="radio" data-value="1"><span class="seg-label">High</span></button>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="layout-title">
+      <h2 id="layout-title">Layout</h2>
+      <label class="switch-row">
+        <span>
+          <span class="row-title">Floating page</span>
+          <span class="row-sub">Show websites in a rounded card inset from the window edge</span>
+        </span>
+        <input type="checkbox" role="switch" id="floating" class="switch">
+      </label>
+    </section>
+
+    <section class="card" aria-labelledby="roles-title">
+      <h2 id="roles-title">Current palette</h2>
+      <p class="hint">Click a role to copy its color.</p>
+      <div class="roles" id="roles"></div>
+    </section>
+  </main>
+
+  <div class="snackbar" id="snackbar" role="status" aria-live="polite" hidden></div>
+</body>
+</html>

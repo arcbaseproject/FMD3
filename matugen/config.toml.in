@@ -1,0 +1,14 @@
+# Matugen config for the Firefox Material You theme.
+# Standalone:  matugen image ~/Pictures/wall.png -c ~/.config/matugen/config.toml --prefer saturation
+# DankMaterialShell picks up templates from ~/.config/matugen/config.toml
+# automatically when "Run user templates" is on (Settings > Theme & Colors).
+
+[config]
+
+[templates.firefox-m3]
+input_path = '~/.config/matugen/templates/firefox-m3.css'
+output_path = '@PROFILE_DIR@/chrome/m3/palette.generated.css'
+
+[templates.firefox-m3-pages]
+input_path = '~/.config/matugen/templates/firefox-m3-pages.css'
+output_path = '@PROFILE_DIR@/chrome/m3/pages.palette.generated.css'

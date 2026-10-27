@@ -1,0 +1,353 @@
+/* ==========================================================================
+   Material You for Firefox: menus and panels
+   Context menus, menubar menus, the app menu and every arrow panel share one
+   M3 menu surface: surface-container-high, 20px corners, level-2 elevation,
+   full-pill items with tonal hover.
+
+   Rounded, shadowed popups on Linux need a compositor with alpha
+   (any Wayland compositor, MangoWM included). Without it Firefox forces
+   square opaque menus and these radii are ignored.
+   ========================================================================== */
+
+@namespace html url("http://www.w3.org/1999/xhtml");
+
+/* -- Shared popup surface --------------------------------------------------- */
+
+menupopup,
+panel {
+  --panel-padding: 8px !important;
+  --panel-padding-block: 8px !important;
+  --panel-box-shadow-margin: 10px !important;
+  --menuitem-padding-block: 9px !important;
+  --menuitem-padding-inline: 14px !important;
+  --menuitem-margin: 0 !important;
+  --panel-menuitem-padding-block: 9px !important;
+  --panel-menuitem-padding-inline: 14px !important;
+  --panel-menuitem-margin: 0 8px !important;
+  font-family: var(--m3-font-plain) !important;
+}
+
+/* Popup open: emphasized fade + small rise. Firefox animates opacity and
+   transform on .animatable-menupopup / arrow panels; we only retune them. */
+menupopup::part(content),
+panel::part(content) {
+  box-shadow: var(--m3-elev-2) !important;
+}
+
+panel[type="arrow"][animate][animate="open"],
+menupopup.animatable-menupopup[animate="open"] {
+  transition-timing-function: var(--m3-ease-emphasized-decelerate) !important;
+  transition-duration: var(--m3-dur-medium) !important;
+}
+
+/* -- Menu items (context menus, menubar, bookmarks menus, selects) -------- */
+
+menupopup :is(menuitem, menu) {
+  border-radius: var(--md-sys-shape-corner-full) !important;
+  margin-inline: 0 !important;
+  min-height: 36px;
+  color: var(--md-sys-color-on-surface) !important;
+  transition: background-color var(--m3-dur-short) var(--m3-ease-standard) !important;
+}
+
+menupopup :is(menuitem, menu)[_moz-menuactive]:not([disabled]) {
+  background-color: var(--md-sys-color-secondary-container) !important;
+  color: var(--md-sys-color-on-secondary-container) !important;
+}
+
+menupopup :is(menuitem, menu)[_moz-menuactive][disabled] {
+  background-color: var(--m3-hover) !important;
+}
+
+menupopup :is(menuitem, menu)[disabled] {
+  color: color-mix(in srgb, var(--md-sys-color-on-surface) 38%, transparent) !important;
+}
+
+menupopup :is(menuitem, menu) > .menu-accel-container,
+menupopup .menu-accel,
+menupopup .menu-iconic-accel {
+  color: var(--md-sys-color-on-surface-variant) !important;
+  opacity: 1 !important;
+}
+
+menupopup :is(menuitem, menu)[_moz-menuactive]:not([disabled]) :is(.menu-accel, .menu-iconic-accel, .menu-accel-container) {
+  color: var(--md-sys-color-on-secondary-container) !important;
+}
+
+menupopup .menu-icon,
+menupopup .menu-iconic-icon {
+  fill: currentColor !important;
+  -moz-context-properties: fill, fill-opacity !important;
+}
+
+/* Checked / radio items show their state with the primary role. */
+menupopup menuitem:is([type="checkbox"], [type="radio"])[checked] > .menu-icon,
+menupopup menuitem:is([type="checkbox"], [type="radio"])[checked] > .menu-check {
+  fill: var(--md-sys-color-primary) !important;
+}
+
+menupopup menuseparator {
+  padding-block: 4px !important;
+  padding-inline: 12px !important;
+  appearance: none !important;
+}
+
+menupopup menuseparator::before {
+  border-top: 1px solid var(--md-sys-color-outline-variant) !important;
+}
+
+menupopup menucaption {
+  color: var(--md-sys-color-primary) !important;
+  font-weight: 600 !important;
+  padding-inline: 14px !important;
+}
+
+/* Context menu: the back/forward/reload/bookmark icon row */
+#context-navigation > .menuitem-iconic {
+  border-radius: var(--md-sys-shape-corner-full) !important;
+  margin-inline: 2px !important;
+}
+
+#context-navigation > .menuitem-iconic[_moz-menuactive] {
+  background-color: var(--md-sys-color-secondary-container) !important;
+}
+
+/* Menubar (Alt) */
+#main-menubar > menu {
+  border-radius: var(--md-sys-shape-corner-full) !important;
+  padding-inline: 10px !important;
+}
+
+#main-menubar > menu[_moz-menuactive],
+#main-menubar > menu[open] {
+  background-color: var(--md-sys-color-secondary-container) !important;
+  color: var(--md-sys-color-on-secondary-container) !important;
+}
+
+/* -- App menu and arrow panels (subview buttons) ---------------------------- */
+
+.panel-subview-body {
+  padding-block: 4px !important;
+}
+
+.subviewbutton,
+.panel-subview-footer-button,
+.PanelUI-subView .subviewbutton {
+  border-radius: var(--md-sys-shape-corner-full) !important;
+  margin-inline: 8px !important;
+  padding: 9px 14px !important;
+  min-height: 40px;
+  color: var(--md-sys-color-on-surface) !important;
+  transition: background-color var(--m3-dur-short) var(--m3-ease-standard) !important;
+}
+
+.subviewbutton:not([disabled]):is(:hover, :focus-visible),
+.panel-subview-footer-button:not([disabled]):hover {
+  background-color: var(--md-sys-color-secondary-container) !important;
+  color: var(--md-sys-color-on-secondary-container) !important;
+}
+
+.subviewbutton:not([disabled]):hover:active,
+.panel-subview-footer-button:not([disabled]):hover:active {
+  background-color: color-mix(in srgb, var(--md-sys-color-on-secondary-container) 12%, var(--md-sys-color-secondary-container)) !important;
+}
+
+.subviewbutton:focus-visible {
+  outline: 2px solid var(--md-sys-color-primary) !important;
+  outline-offset: -2px !important;
+}
+
+.subviewbutton[disabled] {
+  color: color-mix(in srgb, var(--md-sys-color-on-surface) 38%, transparent) !important;
+}
+
+.subviewbutton > .toolbarbutton-icon {
+  fill: currentColor !important;
+}
+
+.subviewbutton .menu-accel,
+.subviewbutton > .menu-accel-container,
+.subviewbutton > .toolbarbutton-accel {
+  color: var(--md-sys-color-on-surface-variant) !important;
+}
+
+/* Panel header: headline-small, back arrow in a circle */
+.panel-header {
+  min-height: 52px !important;
+  padding: 8px 12px !important;
+  border: none !important;
+}
+
+.panel-header > h1,
+.panel-header > h1 > span {
+  font-family: var(--m3-font-brand) !important;
+  font-size: 1.08em !important;
+  font-weight: 600 !important;
+  color: var(--md-sys-color-on-surface) !important;
+}
+
+.subviewbutton-back {
+  border-radius: var(--md-sys-shape-corner-full) !important;
+  margin: 0 !important;
+  padding: 8px !important;
+}
+
+/* Separators in panels */
+panel toolbarseparator,
+.panel-subview-body toolbarseparator,
+#appMenu-popup toolbarseparator {
+  border-color: var(--md-sys-color-outline-variant) !important;
+  margin-inline: 16px !important;
+  margin-block: 6px !important;
+}
+
+/* App menu: zoom controls become a row of tonal icon buttons */
+#appMenu-zoom-controls {
+  gap: 4px;
+}
+
+#appMenu-zoom-controls > .subviewbutton:is(#appMenu-zoomReduce-button2, #appMenu-zoomEnlarge-button2, #appMenu-zoomReset-button2, #appMenu-fullscreen-button2) {
+  margin: 0 !important;
+  min-width: 36px;
+  min-height: 36px;
+  padding: 8px !important;
+  justify-content: center;
+  background-color: var(--md-sys-color-surface-container-highest) !important;
+  color: var(--md-sys-color-on-surface) !important;
+  border-radius: var(--md-sys-shape-corner-full) !important;
+}
+
+#appMenu-zoom-controls > .subviewbutton:is(#appMenu-zoomReduce-button2, #appMenu-zoomEnlarge-button2, #appMenu-zoomReset-button2, #appMenu-fullscreen-button2):not([disabled]):hover {
+  background-color: var(--md-sys-color-secondary-container) !important;
+  color: var(--md-sys-color-on-secondary-container) !important;
+}
+
+#appMenu-zoomReset-button2 {
+  min-width: 64px !important;
+  font-weight: 600 !important;
+}
+
+#appMenu-zoomReset-button2 > .toolbarbutton-text {
+  color: inherit !important;
+}
+
+#appMenu-fullscreen-button2[checked] {
+  background-color: var(--md-sys-color-primary) !important;
+  fill: var(--md-sys-color-on-primary) !important;
+}
+
+/* Update / what's new banners: primary container card */
+.panel-banner-item {
+  border-radius: var(--md-sys-shape-corner-large) !important;
+  margin: 8px !important;
+}
+
+/* Account row and profile chips */
+#appMenu-fxa-status2,
+#appMenu-profiles-button {
+  border-radius: var(--md-sys-shape-corner-large) !important;
+}
+
+#appMenu-fxa-label2 {
+  background-color: var(--md-sys-color-surface-container-highest) !important;
+}
+
+/* Sign-in promo and similar callouts: primary container card */
+#appMenu-fxa-sign-in-promo {
+  background-color: var(--md-sys-color-primary-container) !important;
+  color: var(--md-sys-color-on-primary-container) !important;
+  border-radius: var(--md-sys-shape-corner-large) !important;
+  margin: 8px !important;
+}
+
+#appMenu-fxa-sign-in-promo a {
+  color: inherit !important;
+  font-weight: 600 !important;
+}
+
+/* -- Generic in-panel buttons (Firefox "panel-footer" and moz-button) ----- */
+
+.panel-footer {
+  background: transparent !important;
+  border: none !important;
+  padding: 8px 12px 12px !important;
+  gap: 8px;
+}
+
+.panel-footer > button,
+.panel-footer > .footer-button,
+panel button.footer-button,
+.popup-notification-primary-button,
+.popup-notification-secondary-button,
+.popup-notification-dropmarker {
+  appearance: none !important;
+  border: none !important;
+  /* Half the 40px height rather than 999px, so the press morph to 12px
+     animates smoothly instead of overshooting below zero. */
+  border-radius: 20px !important;
+  min-height: 40px !important;
+  padding-inline: 20px !important;
+  font-weight: 500 !important;
+  background-color: var(--md-sys-color-surface-container-highest) !important;
+  color: var(--md-sys-color-primary) !important;
+  transition: background-color var(--m3-dur-short) var(--m3-ease-standard),
+              border-radius var(--m3-dur-medium) var(--m3-ease-spatial-fast) !important;
+}
+
+.panel-footer > button:hover,
+.panel-footer > .footer-button:hover,
+panel button.footer-button:hover,
+.popup-notification-secondary-button:hover {
+  background-color: color-mix(in srgb, var(--md-sys-color-primary) 10%, var(--md-sys-color-surface-container-highest)) !important;
+}
+
+:is(.panel-footer > button, panel button.footer-button, .popup-notification-primary-button):hover:active {
+  border-radius: var(--md-sys-shape-corner-medium) !important;
+}
+
+:is(.panel-footer > button, panel button.footer-button)[default],
+.popup-notification-primary-button,
+.panel-footer > button.primary {
+  background-color: var(--md-sys-color-primary) !important;
+  color: var(--md-sys-color-on-primary) !important;
+}
+
+:is(.panel-footer > button, panel button.footer-button)[default]:hover,
+.popup-notification-primary-button:hover {
+  background-color: var(--color-accent-primary-hover) !important;
+}
+
+/* Permission / doorhanger notifications */
+.popup-notification-panel popupnotification,
+popupnotification {
+  --popup-notification-body-width: 100% !important;
+  background: transparent !important;
+  color: var(--md-sys-color-on-surface) !important;
+}
+
+popupnotification .popup-notification-header-container,
+popupnotification .popup-notification-description {
+  font-family: var(--m3-font-brand) !important;
+}
+
+/* Inputs inside panels (bookmark name, folder pickers) */
+panel :is(input, html|input):not([type="checkbox"], [type="radio"]),
+panel menulist {
+  border-radius: var(--md-sys-shape-corner-medium) !important;
+  border: 1px solid var(--md-sys-color-outline) !important;
+  background-color: transparent !important;
+  color: var(--md-sys-color-on-surface) !important;
+  padding: 7px 12px !important;
+}
+
+panel :is(input, html|input):not([type="checkbox"], [type="radio"]):focus,
+panel menulist:focus-visible {
+  border-color: var(--md-sys-color-primary) !important;
+  outline: 1px solid var(--md-sys-color-primary) !important;
+  outline-offset: 0 !important;
+}
+
+/* Edit-bookmark panel title */
+#editBookmarkPanel .panel-header {
+  justify-content: start;
+}
