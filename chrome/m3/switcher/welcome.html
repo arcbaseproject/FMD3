@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="color-scheme" content="light dark">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Welcome to FMD3</title>
+  <link rel="icon" href="chrome://m3theme/content/palette.svg">
+  <link rel="stylesheet" href="chrome://m3palette/content/tokens.css">
+  <link rel="stylesheet" href="chrome://m3palette/content/palette.generated.css">
+  <link rel="stylesheet" href="chrome://m3theme/content/switcher.css">
+  <link rel="stylesheet" href="chrome://m3theme/content/welcome.css">
+  <script type="module" src="chrome://m3theme/content/welcome.mjs"></script>
+</head>
+<body>
+  <main class="stage" data-step="1">
+    <div class="copy">
+      <section class="slide" data-step="1" aria-labelledby="t1">
+        <h1 id="t1" tabindex="-1">Firefox, in your colors</h1>
+        <p>FMD3 restyles tabs, the address bar, menus and Firefox's own pages with Material You.
+          Four short steps get it set up.</p>
+      </section>
+
+      <section class="slide" data-step="2" aria-labelledby="t2" hidden>
+        <h2 id="t2" tabindex="-1">Light, dark, or both</h2>
+        <p>Pick a side of the circle to keep Firefox light or dark.
+          Match desktop switches with your system, day and night.</p>
+        <p class="actions"><button type="button" class="btn btn-tonal mode" data-theme="default-theme@mozilla.org" aria-pressed="false">Match desktop</button></p>
+        <p class="status" id="mode-status" role="status" aria-live="polite"></p>
+      </section>
+
+      <section class="slide" data-step="3" aria-labelledby="t3" hidden>
+        <h2 id="t3" tabindex="-1">Pick a color</h2>
+        <p>Firefox repaints as soon as you choose. Keep your desktop's colors, or pick one of these.</p>
+        <div class="picks" role="radiogroup" aria-labelledby="t3" id="picks">
+          <button type="button" role="radio" class="pick pick-desktop" data-source="files">Desktop</button>
+        </div>
+        <p class="status" id="pick-status" role="status" aria-live="polite"></p>
+      </section>
+
+      <section class="slide" data-step="4" aria-labelledby="t4" hidden>
+        <h2 id="t4" tabindex="-1">Change it any time</h2>
+        <p>The theme page has every option: wallpaper colors, styles, contrast and layout.
+          Open it with the palette button in the toolbar, <strong>Tools &gt; Custom themes…</strong>,
+          or <kbd id="shortcut">Ctrl+Alt+M</kbd>.</p>
+        <p class="actions"><a class="btn btn-tonal" href="chrome://m3theme/content/switcher.html">Open the theme page</a></p>
+      </section>
+
+      <section class="slide" data-step="5" aria-labelledby="t5" hidden>
+        <h2 id="t5" tabindex="-1">You're set</h2>
+        <p>FMD3 checks for updates once a day. Restart Firefox after an update to load it.</p>
+        <p class="aside">To remove FMD3 and restore your old setup, run <code>./install.sh --uninstall</code>
+          from the FMD3 folder. Details are in the
+          <a href="https://github.com/arcbaseproject/FMD3#readme">README</a>.</p>
+        <p class="actions"><a class="btn btn-filled" href="about:home">Start browsing</a></p>
+      </section>
+    </div>
+
+    <div class="art">
+      <div class="shape">
+        <div class="art-layer" data-for="1" aria-hidden="true">
+          <div class="mock">
+            <div class="mock-tabs">
+              <span class="mock-tab mock-tab-active"></span>
+              <span class="mock-tab"></span>
+              <span class="mock-tab"></span>
+            </div>
+            <div class="mock-bar">
+              <span class="mock-btn"></span>
+              <span class="mock-url"></span>
+              <span class="mock-btn"></span>
+            </div>
+            <div class="mock-page">
+              <span class="mock-line mock-line-wide"></span>
+              <span class="mock-line"></span>
+              <span class="mock-chip"></span>
+              <span class="mock-fab"></span>
+            </div>
+          </div>
+        </div>
+        <div class="art-layer" data-for="2">
+          <button type="button" class="mode mode-light" data-theme="firefox-compact-light@mozilla.org" aria-pressed="false" aria-label="Light">
+          <svg class="glyph" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zM2 13h2a1 1 0 0 0 0-2H2a1 1 0 0 0 0 2zm18 0h2a1 1 0 0 0 0-2h-2a1 1 0 0 0 0 2zM11 2v2a1 1 0 0 0 2 0V2a1 1 0 0 0-2 0zm0 18v2a1 1 0 0 0 2 0v-2a1 1 0 0 0-2 0zM5.99 4.58a1 1 0 0 0-1.41 1.41l1.06 1.06a1 1 0 0 0 1.41-1.41L5.99 4.58zm12.37 12.37a1 1 0 0 0-1.41 1.41l1.06 1.06a1 1 0 0 0 1.41-1.41l-1.06-1.06zm1.06-10.96a1 1 0 0 0-1.41-1.41l-1.06 1.06a1 1 0 0 0 1.41 1.41l1.06-1.06zM7.05 18.36a1 1 0 0 0-1.41-1.41l-1.06 1.06a1 1 0 0 0 1.41 1.41l1.06-1.06z"/></svg>
+          </button>
+          <button type="button" class="mode mode-dark" data-theme="firefox-compact-dark@mozilla.org" aria-pressed="false" aria-label="Dark">
+          <svg class="glyph glyph-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.39 5.39 0 0 1-4.4 2.26 5.4 5.4 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/></svg>
+          </button>
+        </div>
+        <div class="art-layer" data-for="3" aria-hidden="true">
+          <span class="dot dot-primary"></span>
+          <span class="dot dot-secondary"></span>
+          <span class="dot dot-tertiary"></span>
+        </div>
+        <div class="art-layer" data-for="4" aria-hidden="true">
+          <span class="key" data-mod="ctrl">Ctrl</span>
+          <span class="key" data-mod="alt">Alt</span>
+          <span class="key">M</span>
+        </div>
+        <div class="art-layer" data-for="5" aria-hidden="true">
+          <svg class="glyph" viewBox="0 0 24 24"><path d="M9 16.17 5.53 12.7a1 1 0 0 0-1.41 1.41l4.18 4.18a1 1 0 0 0 1.41 0L20.29 7.71a1 1 0 0 0-1.41-1.41L9 16.17z"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <nav class="stepper" aria-label="Welcome steps">
+      <button type="button" class="btn btn-text" id="back">Back</button>
+      <ol class="dots" id="dots"></ol>
+      <button type="button" class="btn btn-filled" id="next">Next</button>
+    </nav>
+  </main>
+</body>
+</html>

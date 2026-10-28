@@ -12,7 +12,7 @@
  *   m3.theme.contrast  "-1" .. "1"          matugen contrast level
  *   m3.theme.wallpaper image path; empty = DankMaterialShell's wallpaper
  *
- * "files" means no live override: the palette comes from the matugen
+ * "files" reads and applies the desktop palette from the matugen
  * templates (palette.generated.css, pages.palette.generated.css), which
  * DankMaterialShell keeps in sync with the desktop.
  */
@@ -55,14 +55,7 @@ export const PRESETS = [
 ];
 
 // Firefox's own pages that the theme styles (keep in sync with m3/pages.css).
-const PAGE_PREFIXES = [
-  "chrome:", "about:home", "about:newtab", "about:privatebrowsing",
-  "about:preferences", "about:settings", "about:addons", "about:downloads",
-  "about:firefoxview", "about:config", "about:logins", "about:profiles",
-  "about:support", "about:protections", "about:certerror", "about:neterror",
-  "about:sessionrestore", "about:welcome", "about:editprofile",
-  "about:newprofile", "about:deleteprofile", "about:translations",
-];
+const PAGE_SCOPE = 'url-prefix("chrome:"), regexp("about:(?!blank(?:[?#]|$)|srcdoc(?:[?#]|$)).*")';
 
 const ROLES = [
   "primary", "on_primary", "primary_container", "on_primary_container",
@@ -114,6 +107,11 @@ export const M3Theme = {
   async init() {
     const { source } = this.state;
     if (source === "files") {
+      try {
+        this._register(await this._desktopCss());
+      } catch (e) {
+        console.error("m3theme: desktop palette:", e);
+      }
       return;
     }
     try {
@@ -203,7 +201,7 @@ export const M3Theme = {
       Object.entries(palette[mode])
         .map(([role, hex]) => `${indent}--md-sys-color-${role.replaceAll("_", "-")}: ${hex} !important;`)
         .join("\n");
-    const scope = PAGE_PREFIXES.map(p => `url-prefix("${p}")`).join(", ");
+    const scope = PAGE_SCOPE;
     return `/* Live palette from the Material You theme switcher.
  * Written by m3/switcher; delete it (or pick "Desktop") to go back to the
  * matugen palette files. Scoped so websites never see these variables. */
@@ -229,7 +227,9 @@ ${decls("dark", "      ")}
     const ticket = ++generation;
 
     if (state.source === "files") {
-      this._unregister();
+      const css = await this._desktopCss();
+      if (ticket !== generation) return null;
+      this._register(css);
       await IOUtils.remove(liveFile(), { ignoreAbsent: true });
       this._save(state);
       return null;
@@ -245,6 +245,21 @@ ${decls("dark", "      ")}
     await IOUtils.writeUTF8(liveFile(), css);
     this._save(state);
     return palette;
+  },
+
+  async _desktopCss() {
+    const readPalette = async (generated, fallback) => {
+      const path = PathUtils.join(chromeDir(), "m3", generated);
+      return IOUtils.readUTF8(await IOUtils.exists(path)
+        ? path : PathUtils.join(chromeDir(), "m3", fallback));
+    };
+    const [browser, pages] = await Promise.all([
+      readPalette("palette.generated.css", "tokens.css"),
+      readPalette("pages.palette.generated.css", "pages.palette.static.css"),
+    ]);
+    // Desktop palettes need the same priority as generated live colors.
+    return (`@-moz-document url-prefix("chrome:") {\n${browser}\n}\n${pages}`)
+      .replace(/(--md-sys-color-[\w-]+:[^;!]+)(;)/g, "$1 !important$2");
   },
 
   _save(state) {

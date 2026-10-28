@@ -6,6 +6,7 @@
 #   ./install.sh --list              show the Firefox profiles found
 #   ./install.sh --no-hook           skip the theme switcher hook
 #   ./install.sh --no-auto-update    disable automatic updates for this profile
+#   ./install.sh --no-icon           keep Firefox's own app icon
 #   ./install.sh --wallpaper <image> generate the palette from an image
 #   ./install.sh --firefox-dir <dir> Firefox install folder for the hook
 #                                    (for a Firefox unpacked somewhere else)
@@ -23,6 +24,7 @@ BLOCK_END="// <<< FMD3"
 profile_arg=""
 want_hook=1
 want_auto_update=1
+want_icon=1
 update_only=0
 wallpaper=""
 firefox_dir=""
@@ -41,7 +43,7 @@ warn() { printf '%s  ! %s%s\n' "$yellow" "$*" "$reset" >&2; }
 die()  { printf '%serror:%s %s\n' "$red" "$reset" "$*" >&2; exit 1; }
 
 usage() {
-  sed -n '2,16p' "$0" 2>/dev/null | sed 's/^# \{0,1\}//' || true
+  sed -n '2,17p' "$0" 2>/dev/null | sed 's/^# \{0,1\}//' || true
 }
 
 # -- Arguments ----------------------------------------------------------------
@@ -52,7 +54,8 @@ while [[ $# -gt 0 ]]; do
     --list)      action="list"; shift ;;
     --no-hook)   want_hook=0; shift ;;
     --no-auto-update) want_auto_update=0; shift ;;
-    --update-only) update_only=1; want_hook=0; want_auto_update=0; shift ;;
+    --no-icon)   want_icon=0; shift ;;
+    --update-only) update_only=1; want_hook=0; want_auto_update=0; want_icon=0; shift ;;
     --wallpaper) wallpaper="${2:?--wallpaper needs an image path}"; shift 2 ;;
     --firefox-dir) firefox_dir="${2:?--firefox-dir needs a directory}"; shift 2 ;;
     --uninstall) action="uninstall"; shift ;;
@@ -288,6 +291,88 @@ EOF
   fi
 }
 
+# -- App icon -------------------------------------------------------------------
+
+data_home="${XDG_DATA_HOME:-$HOME/.local/share}"
+icon_name="fmd3-firefox"
+icon_file="$data_home/icons/hicolor/scalable/apps/$icon_name.svg"
+desktop_names=(firefox.desktop firefox-esr.desktop org.mozilla.firefox.desktop firefox_firefox.desktop)
+
+refresh_icon_caches() {
+  command -v gtk-update-icon-cache >/dev/null && gtk-update-icon-cache -qtf "$data_home/icons/hicolor" >/dev/null 2>&1 || true
+  command -v update-desktop-database >/dev/null && update-desktop-database -q "$data_home/applications" >/dev/null 2>&1 || true
+}
+
+# Points Firefox's launcher at the FMD3 logo. A desktop file in the user's
+# applications folder shadows the system one with the same name, so copy the
+# system entry there and swap its Icon= lines. An existing user entry is edited
+# in place and its old icon kept in X-FMD3-OriginalIcon for --uninstall.
+install_icon() {
+  step "App icon"
+  local apps="$data_home/applications" dirs dir name system user found=0 old tmpf
+  mkdir -p "$(dirname "$icon_file")" "$apps"
+  install -m 644 "$src/docs/logo.svg" "$icon_file"
+  IFS=: read -r -a dirs <<< "${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
+  dirs+=(/var/lib/snapd/desktop)
+  for name in "${desktop_names[@]}"; do
+    user="$apps/$name"
+    system=""
+    for dir in "${dirs[@]}"; do
+      [[ -n "$dir" && -f "$dir/applications/$name" ]] && { system="$dir/applications/$name"; break; }
+    done
+    if [[ -f "$user" ]] && grep -q '^X-FMD3-' "$user"; then
+      # Ours from an earlier install: recopy so a newer system entry is used.
+      if grep -q '^X-FMD3-Created=true' "$user" && [[ -n "$system" ]]; then
+        rm -f "$user"
+      else
+        found=1
+        continue
+      fi
+    fi
+    tmpf="$(mktemp)"
+    if [[ -f "$user" ]]; then
+      old="$(sed -n 's/^Icon=//p' "$user" | head -1)"
+      awk -v old="$old" '{ print } $0 == "[Desktop Entry]" { print "X-FMD3-OriginalIcon=" old }' "$user" > "$tmpf"
+    elif [[ -n "$system" ]]; then
+      awk '{ print } $0 == "[Desktop Entry]" { print "X-FMD3-Created=true" }' "$system" > "$tmpf"
+    else
+      rm -f "$tmpf"
+      continue
+    fi
+    sed "s/^Icon=.*/Icon=$icon_name/" "$tmpf" > "$user"
+    rm -f "$tmpf"
+    found=1
+    info "Set the icon in $user"
+  done
+  if [[ "$found" == 0 ]]; then
+    warn "No Firefox launcher (.desktop file) found; the logo is in $icon_file"
+    return
+  fi
+  refresh_icon_caches
+  info "Firefox now shows the FMD3 logo in launchers and the dock (may need a re-login)."
+}
+
+remove_icon() {
+  local apps="$data_home/applications" name user old tmpf
+  for name in "${desktop_names[@]}"; do
+    user="$apps/$name"
+    [[ -f "$user" ]] && grep -q '^X-FMD3-' "$user" || continue
+    if grep -q '^X-FMD3-Created=true' "$user"; then
+      rm -f "$user"
+    else
+      old="$(sed -n 's/^X-FMD3-OriginalIcon=//p' "$user" | head -1)"
+      tmpf="$(mktemp)"
+      awk -v old="$old" '/^X-FMD3-/ { next } /^Icon=/ { print "Icon=" old; next } { print }' "$user" > "$tmpf"
+      cat "$tmpf" > "$user"
+      rm -f "$tmpf"
+    fi
+    info "Restored the Firefox icon in $user"
+  done
+  [[ -f "$icon_file" ]] || return 0
+  rm -f "$icon_file"
+  refresh_icon_caches
+}
+
 do_list() {
   local path name flag
   list_profiles | while IFS=$'\t' read -r path name flag; do
@@ -430,6 +515,20 @@ do_install() {
 
   mkdir -p "$profile/chrome"
   cp -R "$src/chrome/." "$profile/chrome/"
+  # Expand older saved palettes to all internal pages without changing colors.
+  local palette scope='regexp("about:(?!blank(?:[?#]|$)|srcdoc(?:[?#]|$)).*")'
+  for palette in pages.palette.generated.css palette.live.css; do
+    local palette_file="$profile/chrome/m3/$palette"
+    [[ -f "$palette_file" ]] || continue
+    grep -q '^@-moz-document ' "$palette_file" || continue
+    local palette_scope="$scope"
+    [[ "$palette" == palette.live.css ]] && palette_scope="url-prefix(\"chrome:\"), $scope"
+    awk -v scope="$palette_scope" '
+      /^@-moz-document / { print "@-moz-document " scope " {"; next }
+      { print }
+    ' "$palette_file" > "$palette_file.tmp"
+    mv "$palette_file.tmp" "$palette_file"
+  done
   # Entry points document an override section; carry it forward on updates.
   if [[ "$backup" == "$profile"/fmd3-update-* ]]; then
     local entry
@@ -454,6 +553,14 @@ user_pref("svg.context-properties.content.enabled", true);'
     install_matugen
   fi
   [[ "$want_hook" == 1 ]] && install_hook
+  if [[ "$want_icon" == 1 ]]; then
+    install_icon
+  elif [[ "$update_only" == 1 ]]; then
+    # Keep an icon set by an earlier install current; never add one.
+    [[ -f "$icon_file" && -f "$src/docs/logo.svg" ]] && install -m 644 "$src/docs/logo.svg" "$icon_file"
+  else
+    remove_icon
+  fi
   if [[ "$update_only" == 0 ]]; then
     if [[ "$want_auto_update" == 1 ]]; then
       install_auto_update
@@ -472,6 +579,7 @@ do_uninstall() {
   profile="$(pick_profile)"
   step "Removing FMD3 from $profile"
   remove_auto_update
+  remove_icon
   if [[ ! -f "$profile/chrome/.fmd3" ]]; then
     info "FMD3 is not installed in this profile; nothing removed."
     return

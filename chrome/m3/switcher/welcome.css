@@ -1,0 +1,350 @@
+/* First-run welcome page. Builds on switcher.css (fonts, easing, focus ring,
+   mock browser) and uses only --md-sys-color-* roles, so a color picked on
+   step 3 repaints this page too. */
+
+html, body { height: 100%; }
+
+.stage {
+  --shape-size: min(420px, 38vw);
+  min-height: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 48px 48px 32px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "copy art"
+    "nav  nav";
+  grid-template-rows: 1fr auto;
+  align-items: center;
+  column-gap: 64px;
+}
+
+/* -- Copy -------------------------------------------------------------------- */
+
+.copy { grid-area: copy; max-width: 36rem; }
+
+.slide h1,
+.slide h2 {
+  margin: 0 0 16px;
+  font-size: 44px;
+  line-height: 52px;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--md-sys-color-on-surface);
+}
+
+.slide h1:focus,
+.slide h2:focus { outline: none; }
+
+.slide p {
+  margin: 0 0 16px;
+  max-width: 36ch;
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.slide strong { color: var(--md-sys-color-on-surface); font-weight: 500; }
+
+.slide .aside { font-size: 14px; line-height: 20px; }
+
+.slide a:not(.btn) { color: var(--md-sys-color-primary); }
+
+.slide code,
+.slide kbd {
+  font: 500 14px/1 var(--font);
+  padding: 2px 8px;
+  border-radius: 8px;
+  background: var(--md-sys-color-surface-container-high);
+  color: var(--md-sys-color-on-surface);
+  white-space: nowrap;
+}
+
+.slide code { font-family: ui-monospace, monospace; font-size: 13px; }
+
+.slide:not([hidden]) { animation: slide-in 400ms var(--ease) both; }
+
+@keyframes slide-in {
+  from { opacity: 0; transform: translateX(24px); }
+}
+
+.actions { margin-top: 24px !important; }
+
+/* -- Buttons (M3 common buttons) --------------------------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 24px;
+  border: 0;
+  border-radius: 20px;
+  font: 500 14px/20px var(--font);
+  text-decoration: none;
+  background: transparent;
+  transition: background-color 200ms var(--ease), box-shadow 200ms var(--ease);
+}
+
+.btn-filled { background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); }
+.btn-filled:hover { box-shadow: 0 1px 2px color-mix(in srgb, var(--md-sys-color-shadow) 30%, transparent); }
+.btn-tonal { background: var(--md-sys-color-secondary-container); color: var(--md-sys-color-on-secondary-container); }
+.btn-text { color: var(--md-sys-color-primary); padding: 0 16px; }
+
+.btn-filled:hover,
+.btn-tonal:hover { background-image: linear-gradient(var(--hover), var(--hover)); }
+.btn-text:hover { background: color-mix(in srgb, var(--md-sys-color-primary) 8%, transparent); }
+.btn:disabled { visibility: hidden; }
+
+/* -- Color picks ------------------------------------------------------------- */
+
+.picks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 24px 0 8px;
+}
+
+.pick {
+  width: 48px;
+  height: 48px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--seed);
+  transition: border-radius 300ms var(--ease-spatial), transform 150ms var(--ease);
+}
+
+.pick:hover { border-radius: 16px; }
+.pick:active { transform: scale(0.94); }
+
+.pick[aria-checked="true"] {
+  border-radius: 16px;
+  box-shadow: 0 0 0 3px var(--md-sys-color-surface), 0 0 0 5px var(--md-sys-color-on-surface);
+}
+
+.pick-desktop {
+  width: auto;
+  padding: 0 20px;
+  border-radius: 24px;
+  border: 1px solid var(--md-sys-color-outline);
+  background: transparent;
+  color: var(--md-sys-color-on-surface);
+  font: 500 14px/20px var(--font);
+}
+
+.pick-desktop:hover { border-radius: 16px; background: var(--hover); }
+
+.pick-desktop[aria-checked="true"] {
+  border-color: transparent;
+  background: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-on-secondary-container);
+  box-shadow: none;
+}
+
+.status { min-height: 20px; font-size: 14px !important; }
+.status.error { color: var(--md-sys-color-error) !important; }
+.stage.busy .picks { cursor: progress; }
+
+/* -- Art: one shape that morphs per step -------------------------------------- */
+
+.art { grid-area: art; }
+
+.shape {
+  position: relative;
+  width: var(--shape-size);
+  aspect-ratio: 1;
+  background: var(--md-sys-color-primary-container);
+  border-radius: 50%;
+  transition:
+    border-radius 700ms var(--ease-spatial),
+    background-color 500ms var(--ease),
+    rotate 700ms var(--ease-spatial);
+}
+
+.stage[data-step="2"] .shape {
+  border-radius: 50% 50% 50% 50% / 50% 50% 50% 50%;
+  /* Day on the left, night on the right. */
+  background: linear-gradient(90deg,
+    var(--md-sys-color-primary-container) 50%,
+    var(--md-sys-color-inverse-surface) 50%);
+}
+
+.stage[data-step="3"] .shape {
+  border-radius: 62% 38% 46% 54% / 44% 56% 44% 56%;
+  background: var(--md-sys-color-tertiary-container);
+  rotate: -8deg;
+}
+
+.stage[data-step="4"] .shape {
+  border-radius: 30%;
+  background: var(--md-sys-color-secondary-container);
+  rotate: 6deg;
+}
+
+.stage[data-step="5"] .shape {
+  border-radius: 50%;
+  background: var(--md-sys-color-primary);
+}
+
+.art-layer {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  opacity: 0;
+  scale: 0.9;
+  transition: opacity 300ms var(--ease), scale 500ms var(--ease-spatial);
+  pointer-events: none;
+}
+
+/* Counter the shape's tilt so the art stays level. */
+.stage[data-step="3"] .art-layer { rotate: 8deg; }
+.stage[data-step="4"] .art-layer { rotate: -6deg; }
+
+.stage[data-step="1"] [data-for="1"],
+.stage[data-step="2"] [data-for="2"],
+.stage[data-step="3"] [data-for="3"],
+.stage[data-step="4"] [data-for="4"],
+.stage[data-step="5"] [data-for="5"] {
+  opacity: 1;
+  scale: 1;
+  transition-delay: 150ms;
+}
+
+[data-for="1"] .mock { width: 76%; }
+[data-for="1"] .mock-tab { flex: 1; }
+[data-for="1"] .mock-page { height: calc(var(--shape-size) * 0.28); }
+
+.glyph { width: 30%; fill: var(--md-sys-color-on-primary-container); }
+/* Step 2: each half of the circle is a button. */
+.stage[data-step="2"] [data-for="2"] { pointer-events: auto; gap: 0; }
+
+.mode-light,
+.mode-dark {
+  flex: 1;
+  align-self: stretch;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.mode-light { border-radius: 9999px 0 0 9999px; }
+.mode-dark { border-radius: 0 9999px 9999px 0; }
+.mode-light:hover { background: color-mix(in srgb, var(--md-sys-color-on-primary-container) 8%, transparent); }
+.mode-dark:hover { background: color-mix(in srgb, var(--md-sys-color-inverse-on-surface) 8%, transparent); }
+.mode-light:focus-visible,
+.mode-dark:focus-visible { outline-offset: -6px; }
+
+[data-for="2"] .glyph {
+  width: 52%;
+  transition: scale 400ms var(--ease-spatial), opacity 300ms var(--ease);
+}
+
+[data-for="2"] .glyph-moon { fill: var(--md-sys-color-inverse-on-surface); }
+.mode:hover .glyph { scale: 1.1; }
+
+/* A fixed choice grows its icon and fades the other half's. */
+.mode[aria-pressed="true"] .glyph { scale: 1.25; }
+.stage[data-mode="firefox-compact-light"] .mode-dark .glyph,
+.stage[data-mode="firefox-compact-dark"] .mode-light .glyph { opacity: 0.4; scale: 0.85; }
+[data-for="5"] .glyph { width: 36%; fill: var(--md-sys-color-on-primary); }
+
+.dot {
+  width: 22%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  transition: background-color 500ms var(--ease);
+}
+
+.dot-primary { background: var(--md-sys-color-primary); width: 30%; }
+.dot-secondary { background: var(--md-sys-color-secondary); }
+.dot-tertiary { background: var(--md-sys-color-tertiary); }
+
+.key {
+  min-width: 18%;
+  padding: 0 4%;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border-radius: 20%;
+  background: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
+  box-shadow: 0 4px 0 var(--md-sys-color-outline-variant);
+  font: 500 calc(var(--shape-size) * 0.06) / 1 var(--font);
+}
+
+/* -- Stepper ----------------------------------------------------------------- */
+
+.stepper {
+  grid-area: nav;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding-top: 32px;
+}
+
+.stepper #back { justify-self: start; margin-inline-start: -16px; }
+.stepper #next { justify-self: end; }
+
+.dots {
+  display: flex;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dot-btn {
+  display: block;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+.dot-btn::before {
+  content: "";
+  display: block;
+  width: 8px;
+  height: 8px;
+  margin: auto;
+  border-radius: 4px;
+  background: var(--md-sys-color-outline-variant);
+  transition: width 400ms var(--ease-spatial), background-color 200ms var(--ease);
+}
+
+.dot-btn:hover::before { background: var(--md-sys-color-outline); }
+.dot-btn[aria-current="step"] { width: 40px; }
+.dot-btn[aria-current="step"]::before { width: 24px; background: var(--md-sys-color-primary); }
+
+/* -- Narrow windows ---------------------------------------------------------- */
+
+@media (max-width: 760px) {
+  .stage {
+    --shape-size: min(260px, 64vw);
+    padding: 24px 20px 20px;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "art" "copy" "nav";
+    grid-template-rows: auto 1fr auto;
+    align-items: start;
+    row-gap: 32px;
+  }
+  .art { justify-self: center; }
+  .slide h1, .slide h2 { font-size: 32px; line-height: 40px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slide:not([hidden]) { animation: none; }
+  .shape, .art-layer { rotate: none !important; }
+}
+
+.btn.mode[aria-pressed="true"] {
+  background: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+}

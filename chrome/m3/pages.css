@@ -11,15 +11,7 @@
 
 @namespace xul url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
-@-moz-document url-prefix("about:preferences"), url-prefix("about:settings"),
-  url-prefix("about:addons"), url-prefix("about:downloads"),
-  url-prefix("about:firefoxview"), url-prefix("about:config"),
-  url-prefix("about:logins"), url-prefix("about:profiles"),
-  url-prefix("about:support"), url-prefix("about:protections"),
-  url-prefix("about:certerror"), url-prefix("about:neterror"),
-  url-prefix("about:sessionrestore"), url-prefix("about:welcome"),
-  url-prefix("about:editprofile"), url-prefix("about:newprofile"),
-  url-prefix("about:deleteprofile"), url-prefix("about:translations") {
+@-moz-document regexp("about:(?!blank(?:[?#]|$)|srcdoc(?:[?#]|$)).*") {
 
   /* Firefox's widgets redefine their own tokens on :host inside their
      shadow roots, so values set only on :root never reach them. Setting the
@@ -186,6 +178,11 @@
     --in-content-table-background: var(--md-sys-color-surface-container-low) !important;
     --in-content-table-header-background: var(--md-sys-color-secondary-container) !important;
     --in-content-table-header-color: var(--md-sys-color-on-secondary-container) !important;
+    --in-content-border-color: var(--md-sys-color-outline-variant) !important;
+    --in-content-link-color: var(--md-sys-color-primary) !important;
+    --in-content-link-color-hover: var(--md-sys-color-primary) !important;
+    --in-content-link-color-active: var(--md-sys-color-primary) !important;
+    --in-content-link-color-visited: var(--md-sys-color-primary) !important;
 
     accent-color: var(--md-sys-color-primary) !important;
   }
@@ -203,6 +200,16 @@
   .page-title {
     font-family: var(--m3-font) !important;
     letter-spacing: 0;
+  }
+
+  a:link,
+  a:visited {
+    color: var(--md-sys-color-primary) !important;
+  }
+
+  ::selection {
+    background-color: var(--md-sys-color-secondary-container) !important;
+    color: var(--md-sys-color-on-secondary-container) !important;
   }
 
   /* Legacy XUL buttons (still used in parts of Settings and dialogs).
@@ -340,5 +347,100 @@
 
   :root {
     scrollbar-color: var(--md-sys-color-outline-variant) transparent;
+  }
+}
+
+/* Diagnostic pages use plain HTML tables rather than design-system widgets. */
+@-moz-document url-prefix("about:cache"), url-prefix("about:networking"),
+  url-prefix("about:memory"), url-prefix("about:processes"),
+  url-prefix("about:support"), url-prefix("about:telemetry"),
+  url-prefix("about:logging"), url("about:about") {
+  table {
+    background-color: var(--md-sys-color-surface-container-low) !important;
+    color: var(--md-sys-color-on-surface) !important;
+    border: 1px solid var(--md-sys-color-outline-variant) !important;
+    border-radius: 16px !important;
+    border-spacing: 0 !important;
+    overflow: clip;
+  }
+
+  th {
+    background-color: var(--md-sys-color-secondary-container) !important;
+    color: var(--md-sys-color-on-secondary-container) !important;
+  }
+
+  td {
+    background-color: var(--md-sys-color-surface-container-low) !important;
+    color: var(--md-sys-color-on-surface) !important;
+  }
+
+  th,
+  td {
+    border-color: var(--md-sys-color-outline-variant) !important;
+    padding: 8px 12px !important;
+  }
+
+  input:not([type="checkbox"], [type="radio"], [type="button"], [type="submit"]),
+  select,
+  textarea,
+  button {
+    background-color: var(--md-sys-color-surface-container-highest) !important;
+    color: var(--md-sys-color-on-surface) !important;
+    border-color: var(--md-sys-color-outline) !important;
+  }
+}
+
+/* Restore Session and the post-refresh session picker use legacy XUL trees. */
+@-moz-document url-prefix("about:sessionrestore"), url-prefix("about:welcomeback") {
+  #tabList {
+    appearance: none !important;
+    background-color: var(--md-sys-color-surface-container-low) !important;
+    color: var(--md-sys-color-on-surface) !important;
+    border: 1px solid var(--md-sys-color-outline-variant) !important;
+    border-radius: 16px !important;
+    overflow: hidden;
+  }
+
+  #tabList xul|treecol {
+    appearance: none !important;
+    background-color: var(--md-sys-color-surface-container-high) !important;
+    color: var(--md-sys-color-on-surface-variant) !important;
+    border-color: var(--md-sys-color-outline-variant) !important;
+  }
+
+  #tabList xul|treechildren::-moz-tree-row {
+    background-color: var(--md-sys-color-surface-container-low) !important;
+  }
+
+  #tabList xul|treechildren::-moz-tree-row(selected) {
+    background-color: var(--md-sys-color-secondary-container) !important;
+    border-color: transparent !important;
+  }
+
+  #tabList xul|treechildren::-moz-tree-cell-text {
+    color: var(--md-sys-color-on-surface) !important;
+  }
+
+  #tabList xul|treechildren::-moz-tree-cell-text(selected) {
+    color: var(--md-sys-color-on-secondary-container) !important;
+  }
+
+  #tabList xul|treechildren::-moz-tree-image(selected) {
+    fill: var(--md-sys-color-on-secondary-container) !important;
+    stroke: var(--md-sys-color-secondary-container) !important;
+  }
+
+  #errorCancel {
+    appearance: none !important;
+    background-color: var(--md-sys-color-surface-container-highest) !important;
+    color: var(--md-sys-color-primary) !important;
+  }
+
+  #errorCancel:hover {
+    background-color: color-mix(in srgb, var(--md-sys-color-primary) 8%, var(--md-sys-color-surface-container-highest)) !important;
+  }
+
+  #errorTryAgain {
+    appearance: none !important;
   }
 }
