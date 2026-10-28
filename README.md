@@ -58,6 +58,7 @@ Options:
 | `--wallpaper <image>` | Generate the palette from this image |
 | `--no-hook` | Skip the theme switcher hook |
 | `--no-auto-update` | Disable automatic updates for this profile |
+| `--no-icon` | Keep Firefox's own app icon instead of the FMD3 logo |
 | `--firefox-dir <dir>` | Firefox install folder, for a Firefox unpacked somewhere unusual |
 | `--uninstall` | Remove FMD3 and restore the backup |
 
@@ -98,7 +99,8 @@ session, the installer reports that scheduling failed; the theme still installs.
 ## Theme switcher
 
 A page inside Firefox for choosing colors, with no restart. Open it with the
-palette button in the toolbar, or at `chrome://m3theme/content/switcher.html`.
+palette button in the toolbar, **Tools > Custom themes…**, or **Ctrl+Alt+M**
+(**Command+Option+M** on macOS). Direct address: `chrome://m3theme/content/switcher.html`.
 
 - **Desktop**: use the matugen palette files.
 - **Wallpaper**: build the palette from your current wallpaper
@@ -111,6 +113,9 @@ palette button in the toolbar, or at `chrome://m3theme/content/switcher.html`.
 - **Floating page**: show websites in a rounded card, or edge to edge.
 
 The Wallpaper and Custom options need matugen installed.
+
+On the first start after install, the hook also opens a one-time welcome page
+(`chrome://m3theme/content/welcome.html`) covering these steps.
 
 ### The hook
 

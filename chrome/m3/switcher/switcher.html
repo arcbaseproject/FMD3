@@ -17,7 +17,8 @@
     <header class="hero">
       <div class="hero-text">
         <h1>Theme</h1>
-        <p>Pick where Firefox gets its colors. Changes apply instantly.</p>
+        <p>Make Firefox feel like yours.</p>
+        <p class="apply-status" id="apply-status" role="status" aria-live="polite">Changes save automatically</p>
       </div>
       <div class="mock" aria-hidden="true">
         <div class="mock-tabs">
@@ -57,6 +58,7 @@
 
     <section class="card" id="color-section" aria-labelledby="color-title">
       <h2 id="color-title">Color</h2>
+      <p class="hint section-hint">Choose a preset or pick your own color.</p>
       <div class="swatches" id="swatches" role="radiogroup" aria-labelledby="color-title"></div>
       <div class="custom-row">
         <label class="color-well" title="Pick any color">
@@ -65,15 +67,17 @@
         </label>
         <label class="field">
           <span class="field-label">Hex</span>
-          <input type="text" id="hex" spellcheck="false" maxlength="7" autocomplete="off" aria-label="Seed color as hex">
+          <input type="text" id="hex" spellcheck="false" maxlength="7" autocomplete="off" aria-label="Seed color as hex" aria-describedby="hex-help hex-error">
         </label>
-        <p class="hint">The full palette is derived from this one seed, like Android does from your wallpaper.</p>
+        <p class="hint" id="hex-help">Enter a 6-digit hex color. Press Enter or leave the field to apply.</p>
       </div>
+      <p class="field-error" id="hex-error" hidden>Use six letters or numbers from 0–9 and A–F, for example #6750A4.</p>
     </section>
 
     <section class="card" id="style-section" aria-labelledby="style-title">
       <h2 id="style-title">Style</h2>
       <div class="chips" id="schemes" role="radiogroup" aria-labelledby="style-title"></div>
+      <p class="hint" id="style-hint"></p>
     </section>
 
     <section class="card" id="contrast-section" aria-labelledby="contrast-title">
@@ -96,11 +100,11 @@
       </label>
     </section>
 
-    <section class="card" aria-labelledby="roles-title">
-      <h2 id="roles-title">Current palette</h2>
+    <details class="card palette-details">
+      <summary id="roles-title">Current palette <span>View and copy colors</span></summary>
       <p class="hint">Click a role to copy its color.</p>
       <div class="roles" id="roles"></div>
-    </section>
+    </details>
   </main>
 
   <div class="snackbar" id="snackbar" role="status" aria-live="polite" hidden></div>

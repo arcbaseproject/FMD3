@@ -1,17 +1,6 @@
 /* Static Material You palette for Firefox's built-in pages: fallback used
  * when pages.palette.generated.css is missing. M3 tonal-spot from seed #0B57D0.
- * Scoped with @-moz-document so the M3 variables never reach websites. */
-
-@-moz-document url-prefix("about:home"), url-prefix("about:newtab"), url-prefix("about:privatebrowsing"),
-  url-prefix("about:preferences"), url-prefix("about:settings"),
-  url-prefix("about:addons"), url-prefix("about:downloads"),
-  url-prefix("about:firefoxview"), url-prefix("about:config"),
-  url-prefix("about:logins"), url-prefix("about:profiles"),
-  url-prefix("about:support"), url-prefix("about:protections"),
-  url-prefix("about:certerror"), url-prefix("about:neterror"),
-  url-prefix("about:sessionrestore"), url-prefix("about:welcome"),
-  url-prefix("about:editprofile"), url-prefix("about:newprofile"),
-  url-prefix("about:deleteprofile"), url-prefix("about:translations") {
+ * Scoped with @-moz-document regexp("about:(?!blank(?:[?#]|$)|srcdoc(?:[?#]|$)).*") {
   :root {
     --md-sys-color-primary: #495d92;
     --md-sys-color-on-primary: #ffffff;

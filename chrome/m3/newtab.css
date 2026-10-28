@@ -37,6 +37,11 @@
     --urlbar-background-color-focus: var(--md-sys-color-surface-container-high) !important;
     --input-text-background-color: var(--md-sys-color-surface-container-high) !important;
     --toolbar-field-border-color: transparent !important;
+    --toolbar-field-color: var(--md-sys-color-on-surface) !important;
+    --toolbar-field-text-color: var(--md-sys-color-on-surface) !important;
+    --toolbar-field-focus-color: var(--md-sys-color-on-surface) !important;
+    --urlbar-box-text-color: var(--md-sys-color-on-surface-variant) !important;
+    --icon-color: var(--md-sys-color-on-surface-variant) !important;
     --border-color-deemphasized: transparent !important;
     --urlbarview-background-color-selected: var(--md-sys-color-secondary-container) !important;
     --urlbarview-text-color-selected: var(--md-sys-color-on-secondary-container) !important;
@@ -93,6 +98,14 @@
     font-family: var(--m3-font) !important;
     font-size: 16px !important;
     color: var(--md-sys-color-on-surface) !important;
+  }
+
+  .search-handoff-button,
+  .search-wrapper .search-button,
+  .search-wrapper .search-handoff-button .fake-textbox,
+  .search-wrapper moz-urlbar {
+    color: var(--md-sys-color-on-surface) !important;
+    fill: currentColor !important;
   }
 
   .search-wrapper moz-urlbar .urlbar-input::placeholder {

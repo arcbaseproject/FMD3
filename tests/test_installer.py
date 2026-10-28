@@ -39,7 +39,17 @@ class InstallerTests(unittest.TestCase):
             "XDG_CONFIG_HOME": str(self.home / ".config"),
             "PATH": f"{bin_dir}:{os.environ['PATH']}",
             "FMD3_SYSTEMCTL_LOG": str(self.systemctl_log),
+            "XDG_DATA_HOME": str(self.home / ".local/share"),
+            "XDG_DATA_DIRS": str(self.home / "system"),
         }
+        system_apps = self.home / "system/applications"
+        system_apps.mkdir(parents=True)
+        (system_apps / "firefox.desktop").write_text(
+            "[Desktop Entry]\nName=Firefox\nExec=firefox %U\nIcon=firefox\n"
+            "\n[Desktop Action new-window]\nExec=firefox --new-window %U\n"
+        )
+        self.desktop = self.home / ".local/share/applications/firefox.desktop"
+        self.icon = self.home / ".local/share/icons/hicolor/scalable/apps/fmd3-firefox.svg"
         self.chrome = self.profile / "chrome"
         self.config = self.home / ".config/matugen/config.toml"
         self.firefox = self.home / "firefox"
@@ -50,7 +60,7 @@ class InstallerTests(unittest.TestCase):
     def make_update_remote(self):
         self.remote = self.home / "remote"
         self.remote.mkdir()
-        for entry in ("install.sh", "update.sh", "chrome", "matugen"):
+        for entry in ("install.sh", "update.sh", "chrome", "docs", "matugen"):
             source = INSTALLER.parent / entry
             target = self.remote / entry
             if source.is_dir():
@@ -118,6 +128,50 @@ class InstallerTests(unittest.TestCase):
         self.assertNotIn("FMD3", (self.profile / "user.js").read_text())
         self.run_installer("--uninstall")
         self.assertEqual(original.read_text(), "original theme")
+
+    def test_icon_overrides_system_launcher_and_uninstall_removes_it(self):
+        self.run_installer("--no-hook")
+        self.assertTrue(self.icon.is_file())
+        entry = self.desktop.read_text()
+        self.assertIn("Icon=fmd3-firefox", entry)
+        self.assertNotIn("Icon=firefox\n", entry)
+        self.assertIn("[Desktop Entry]\nX-FMD3-Created=true\n", entry)
+        self.assertIn("[Desktop Action new-window]", entry)
+        self.run_installer("--no-hook")
+        self.assertEqual(self.desktop.read_text(), entry)
+        self.run_installer("--uninstall")
+        self.assertFalse(self.desktop.exists())
+        self.assertFalse(self.icon.exists())
+
+    def test_icon_restores_existing_user_launcher(self):
+        self.desktop.parent.mkdir(parents=True)
+        original = "[Desktop Entry]\nName=My Firefox\nIcon=custom-fox\n"
+        self.desktop.write_text(original)
+        self.run_installer("--no-hook")
+        self.assertIn("Icon=fmd3-firefox", self.desktop.read_text())
+        self.assertIn("X-FMD3-OriginalIcon=custom-fox", self.desktop.read_text())
+        self.run_installer("--uninstall")
+        self.assertEqual(self.desktop.read_text(), original)
+
+    def test_no_icon_removes_earlier_icon(self):
+        self.run_installer("--no-hook")
+        self.run_installer("--no-hook", "--no-icon")
+        self.assertFalse(self.desktop.exists())
+        self.assertFalse(self.icon.exists())
+
+    def test_update_expands_saved_palette_scope(self):
+        self.run_installer("--no-hook")
+        for name in ("pages.palette.generated.css", "palette.live.css"):
+            palette = self.chrome / "m3" / name
+            palette.write_text('@-moz-document url-prefix("about:preferences") {\n'
+                               ':root { --md-sys-color-primary: #abcdef; }\n}\n')
+        self.run_installer("--no-hook")
+        for name in ("pages.palette.generated.css", "palette.live.css"):
+            css = (self.chrome / "m3" / name).read_text()
+            self.assertIn('regexp("about:', css)
+            self.assertIn('blank(?:[?#]|$)', css)
+            self.assertIn('--md-sys-color-primary: #abcdef;', css)
+            self.assertEqual('url-prefix("chrome:")' in css, name == "palette.live.css")
 
     def test_update_preserves_customizations_and_backup(self):
         self.run_installer("--no-hook")

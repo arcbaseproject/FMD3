@@ -23,15 +23,20 @@ body {
 }
 
 .page {
-  max-width: 880px;
+  max-width: 1040px;
   margin: 0 auto;
-  padding: 40px 24px 96px;
+  padding: 24px 24px 64px;
   display: grid;
   gap: 16px;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
 }
 
+.page > * { grid-column: 1 / -1; }
+#style-section { grid-column: 1; }
+#contrast-section { grid-column: 2; }
+
 h1 {
-  font-size: 44px;
+  font-size: 36px;
   line-height: 1.1;
   font-weight: 500;
   letter-spacing: -0.5px;
@@ -70,7 +75,7 @@ button {
 
 .hero {
   display: grid;
-  grid-template-columns: 1fr minmax(240px, 340px);
+  grid-template-columns: 1fr 240px;
   gap: 24px;
   align-items: center;
   padding: 8px 4px 16px;
@@ -129,7 +134,7 @@ button {
 
 .mock-page {
   position: relative;
-  height: 128px;
+  height: 80px;
   border-radius: 16px;
   background: var(--md-sys-color-surface);
   padding: 16px;
@@ -233,9 +238,8 @@ button {
 
 .swatches {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(56px, 1fr));
-  gap: 14px;
-  max-width: 600px;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 8px;
 }
 
 .swatch {
@@ -243,11 +247,14 @@ button {
   appearance: none;
   border: none;
   padding: 0;
-  aspect-ratio: 1;
   width: 100%;
-  max-width: 64px;
-  border-radius: 50%;
-  background: conic-gradient(var(--b) 0 25%, var(--c) 25% 50%, var(--a) 50% 100%);
+  min-width: 0;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding: 8px 2px;
+  border-radius: 16px;
+  background: transparent;
   transition: border-radius 350ms var(--ease-spatial), scale 350ms var(--ease-spatial);
 }
 
@@ -260,14 +267,23 @@ button {
 }
 
 .swatch[aria-checked="true"] {
-  border-radius: 18px;
-  box-shadow: 0 0 0 3px var(--md-sys-color-surface-container-low), 0 0 0 5px var(--md-sys-color-primary);
+  background: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-on-secondary-container);
 }
+
+.swatch-q {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: conic-gradient(var(--b) 0 25%, var(--c) 25% 50%, var(--a) 50% 100%);
+}
+
+.swatch-name { font-size: 12px; }
 
 .swatch-check {
   position: absolute;
-  inset: 0;
-  margin: auto;
+  inset: 18px 0 auto;
+  margin-inline: auto;
   width: 24px;
   height: 24px;
   border-radius: 50%;
@@ -310,7 +326,7 @@ button {
   width: 56px;
   height: 56px;
   border-radius: 16px;
-  background: conic-gradient(red, yellow, lime, cyan, blue, magenta, red);
+  background: var(--md-sys-color-surface-container-highest);
   cursor: pointer;
   display: grid;
   place-items: center;
@@ -337,8 +353,8 @@ button {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: var(--md-sys-color-surface);
-  border: 4px solid var(--md-sys-color-surface-container-low);
+  background: var(--seed, var(--md-sys-color-primary));
+  border: 2px solid var(--md-sys-color-outline);
 }
 
 .field {
@@ -348,6 +364,7 @@ button {
   border-bottom: 2px solid var(--md-sys-color-on-surface-variant);
   padding: 6px 14px 4px;
   min-width: 140px;
+  width: 180px;
 }
 
 .field:focus-within {
@@ -391,7 +408,7 @@ button {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  min-height: 34px;
+  min-height: 40px;
   padding: 0 16px;
   border-radius: 10px;
   border: 1px solid var(--md-sys-color-outline-variant);
@@ -553,9 +570,36 @@ body.busy .card {
   cursor: progress;
 }
 
+.hero .apply-status {
+  display: inline-block;
+  margin-top: 16px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-on-secondary-container);
+  font-size: 13px;
+}
+
+.hero .apply-status.error,
+.field-error { color: var(--md-sys-color-error); }
+.field-error { margin-bottom: 0; font-size: 13px; }
+.section-hint { margin: -6px 0 16px; }
+.palette-details > summary { cursor: pointer; font-weight: 600; }
+.palette-details > summary span { margin-inline-start: 12px; font-size: 13px; font-weight: 400; color: var(--md-sys-color-on-surface-variant); }
+
+@media (max-width: 900px) {
+  .swatches { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+}
+
 /* -- Narrow windows ------------------------------------------------------------ */
 
 @media (max-width: 680px) {
+  .page { display: flex; flex-direction: column; padding-inline: 16px; }
+  .hero .mock { display: none; }
+  .swatches { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .segmented { width: 100%; }
+  .segmented > button { flex: 1; justify-content: center; padding-inline: 8px; }
+  .palette-details > summary span { display: block; margin: 4px 0 0; }
   .hero {
     grid-template-columns: 1fr;
   }

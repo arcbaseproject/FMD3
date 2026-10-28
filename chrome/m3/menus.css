@@ -317,6 +317,24 @@ panel button.footer-button:hover,
   background-color: var(--color-accent-primary-hover) !important;
 }
 
+/* Modern notifications use moz-button: paint its shadow button, not the
+   host. Host padding otherwise offsets the label and draws a second pill. */
+.panel-footer > html|moz-button,
+.panel-footer > html|moz-button:hover,
+html|moz-button:is(.popup-notification-primary-button, .popup-notification-secondary-button),
+html|moz-button:is(.popup-notification-primary-button, .popup-notification-secondary-button):hover {
+  background: transparent !important;
+  padding: 0 !important;
+  --button-border-radius: 20px !important;
+  --button-font-weight: 500 !important;
+  --button-min-height: 40px !important;
+  --button-padding: 8px 20px !important;
+  --button-content-alignment: center !important;
+  line-height: 1.4 !important;
+  --button-background-color-primary: var(--md-sys-color-primary) !important;
+  --button-text-color-primary: var(--md-sys-color-on-primary) !important;
+}
+
 /* Permission / doorhanger notifications */
 .popup-notification-panel popupnotification,
 popupnotification {

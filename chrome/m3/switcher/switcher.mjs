@@ -10,9 +10,9 @@ const FLAT_PREF = "m3.content.flat";
 const HEX = /^#[0-9a-f]{6}$/i;
 
 const SOURCE_HINTS = {
-  files: "Uses the palette files written by matugen. DankMaterialShell updates them when your wallpaper or desktop theme changes; restart Firefox to pick up a change.",
-  wallpaper: "Builds the palette from your current DankMaterialShell wallpaper, in the style you pick below. Refreshed every time Firefox starts.",
-  color: "Builds the palette from one color you choose.",
+  files: "Follow your desktop palette. Restart Firefox after changing your desktop colors.",
+  wallpaper: "Match your DankMaterialShell wallpaper. Colors refresh when Firefox starts.",
+  color: "Use one color to create a complete theme for Firefox.",
 };
 
 const ROLE_GROUPS = [
@@ -26,6 +26,7 @@ const ROLE_GROUPS = [
 
 let state = M3Theme.state;
 let busy = 0;
+let updateId = 0;
 
 /* -- Rendering --------------------------------------------------------------- */
 
@@ -35,6 +36,10 @@ function setRadio(group, value) {
     b.setAttribute("aria-checked", on);
     b.tabIndex = on ? 0 : -1;
   }
+  if (!group.querySelector('[aria-checked="true"]')) {
+    const first = group.querySelector('[role="radio"]');
+    if (first) first.tabIndex = 0;
+  }
 }
 
 function render() {
@@ -43,12 +48,17 @@ function render() {
   setRadio($("schemes"), state.scheme);
   setRadio($("swatches"), state.source === "color" ? state.seed.toLowerCase() : "");
   $("source-hint").textContent = SOURCE_HINTS[state.source];
+  $("style-hint").textContent = M3Theme.SCHEMES.find(s => s.id === state.scheme)?.hint || "";
   $("color-section").hidden = state.source !== "color";
   $("style-section").hidden = state.source === "files";
   $("contrast-section").hidden = state.source === "files";
   $("picker").value = state.seed;
+  document.documentElement.style.setProperty("--seed", state.seed);
   if (document.activeElement !== $("hex")) {
     $("hex").value = state.seed.toUpperCase();
+    $("hex").setAttribute("aria-invalid", "false");
+    $("hex").closest(".field").classList.remove("invalid");
+    $("hex-error").hidden = true;
   }
   $("floating").checked = !Services.prefs.getBoolPref(FLAT_PREF, false);
   renderRoles();
@@ -69,8 +79,9 @@ function renderRoles() {
       b.querySelector(".role-name").textContent = role.replaceAll("-", " ");
       b.querySelector(".role-hex").textContent = value.toUpperCase();
       b.addEventListener("click", () => {
-        navigator.clipboard.writeText(value);
-        toast(`Copied ${value.toUpperCase()}`);
+        navigator.clipboard.writeText(value)
+          .then(() => toast(`Copied ${value.toUpperCase()}`))
+          .catch(() => toast("Could not copy this color. Try again."));
       });
       roles.append(b);
     }
@@ -91,6 +102,10 @@ function buildSwatches() {
     b.style.setProperty("--b", p.seed);
     b.style.setProperty("--c", p.seed);
     b.innerHTML = `<span class="swatch-q"></span><span class="swatch-check" aria-hidden="true"></span>`;
+    const name = document.createElement("span");
+    name.className = "swatch-name";
+    name.textContent = p.name;
+    b.append(name);
     b.addEventListener("click", () => update({ source: "color", seed: p.seed }));
     box.append(b);
   }
@@ -133,19 +148,32 @@ function buildSchemes() {
 /* -- Actions ----------------------------------------------------------------- */
 
 async function update(change) {
+  const ticket = ++updateId;
   const prevScheme = state.scheme;
   state = { ...state, ...change };
   render();
   document.body.classList.add("busy");
   busy++;
+  $("apply-status").textContent = "Applying theme…";
+  $("apply-status").classList.remove("error");
+  $("source").setAttribute("aria-busy", "true");
   try {
     await M3Theme.apply(state);
+    if (ticket === updateId) {
+      $("apply-status").textContent = "Theme saved";
+    }
   } catch (e) {
     console.error(e);
-    toast(e.message);
+    if (ticket === updateId) {
+      state = M3Theme.state;
+      render();
+      $("apply-status").textContent = e.message;
+      $("apply-status").classList.add("error");
+    }
   } finally {
     if (--busy === 0) {
       document.body.classList.remove("busy");
+      $("source").setAttribute("aria-busy", "false");
     }
   }
   // Variables update one frame after the sheet swap.
@@ -213,9 +241,21 @@ $("hex").addEventListener("input", e => {
     v = "#" + v;
   }
   const ok = HEX.test(v);
-  e.target.closest(".field").classList.toggle("invalid", !ok && v.length >= 7);
-  if (ok) {
-    update({ source: "color", seed: v });
+  e.target.closest(".field").classList.toggle("invalid", !ok);
+  e.target.setAttribute("aria-invalid", String(!ok));
+  $("hex-error").hidden = ok;
+});
+
+function applyHex() {
+  const value = $("hex").value.trim();
+  const seed = value.startsWith("#") ? value : `#${value}`;
+  if (HEX.test(seed)) update({ source: "color", seed });
+}
+$("hex").addEventListener("change", applyHex);
+$("hex").addEventListener("keydown", e => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    applyHex();
   }
 });
 
